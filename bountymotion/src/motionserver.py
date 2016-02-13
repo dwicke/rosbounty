@@ -41,11 +41,12 @@ if __name__ == "__main__":
         port = 15000
         global server_socket
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        server_socket.bind(("localhost", port))
+        server_socket.bind(("0.0.0.0", port))
 
         while not rospy.is_shutdown():
             data, addr = server_socket.recvfrom(1024)
             data = float(data)
+            print data
             robot_vel(data)
             
             
