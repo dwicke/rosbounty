@@ -19,15 +19,27 @@ ros::Duration duration;
 Twist vel;
 
 
+
+
+void stop_robot()
+{
+  vel.linear.x = 0.0;
+  vel.linear.y = 0;
+  vel.linear.z = 0;
+  vel.angular.x = 0;
+  vel.angular.y = 0;
+  vel.angular.z = 0;
+
+  vel_topic.publish(vel);
+  
+}
+
 void quit(int sig)
 {
+  stop_robot();
   ros::shutdown();
   exit(0);
 }
-
-
-
-
 
 
 int main(int argc, char** argv)
