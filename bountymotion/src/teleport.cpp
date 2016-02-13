@@ -5,7 +5,7 @@
 #include <signal.h>
 #include <termios.h>
 #include <unistd.h>
-#include <fcntl.h>
+
 
 
 
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 
   // The advertise() function is how you tell ROS that you want to publish on a given topic name.
   // The second parameter is the size of the message queue used for publishing messages
-  vel_topic = nh.advertise<Twist>("/RosAria/cmd_vel", 1000);  
+  vel_topic = nh.advertise<Twist>("/RosAria/cmd_vel", 100);  
   
   // call quit function is C-c is pressed
   signal(SIGINT,quit);
