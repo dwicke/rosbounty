@@ -14,7 +14,7 @@ import sys, time
 
 # numpy and scipy
 import numpy as np
-from scipy.ndimage import filters
+#from scipy.ndimage import filters
 
 
 # Ros libraries
@@ -24,7 +24,7 @@ import rospy
 import socket
 
 # Ros Messages
-from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import Image
 
 VERBOSE=False
 
@@ -32,11 +32,13 @@ class image_feature:
 
     def __init__(self):
         '''Initialize ros subscriber'''
-
-
+	self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	self.sock.connect(('10.112.120.216', 8052))
+	
+	
         # subscribed Topic
-        self.subscriber = rospy.Subscriber("/camera/image/compressed",
-            CompressedImage, self.callback,  queue_size = 1)
+        self.subscriber = rospy.Subscriber("/camera/image_raw",
+            Image, self.callback,  queue_size = 1)
         if VERBOSE :
             print "subscribed to /camera/image/compressed"
 
@@ -44,12 +46,12 @@ class image_feature:
     def callback(self, ros_data):
         '''Callback function of subscribed topic. 
         Here images get converted and features detected'''
-        if VERBOSE :
-            print 'received image of type: "%s"' % ros_data.format
-        ##ros_data.data ## has the image.
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.sendto(ros_data.data, (self.getCloudIP(), UDP_PORT))
-
+       	if VERBOSE : 
+		print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
+	if VERBOSE :
+		print ' len of data = "%d"' %  (len(ros_data.data))
+	self.sock.sendall(ros_data.data)
+	
 
 
 def main(args):
