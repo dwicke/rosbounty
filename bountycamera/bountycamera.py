@@ -20,7 +20,7 @@ import numpy as np
 # Ros libraries
 import roslib
 import rospy
-
+import zlib
 import socket
 
 # Ros Messages
@@ -43,6 +43,22 @@ class image_feature:
             print "subscribed to /camera/image/compressed"
 
 
+    ## pixels are ordered BGR
+    def inrange(lowrange, highrange):
+        curColor = 0
+        binaryImage = [1 for i in xrange(self.imageWidth * self.imageHeight)]
+        curIndex = 0
+        for val in self.image:
+            if val < lowrange[curColor] or val > highrange[curColor]:
+                binaryImage[curIndex] &= 0
+            curColor = (curColor + 1) % 3
+            if curColor == 0
+                curIndex += 1
+        return binaryImage
+
+
+
+
     def callback(self, ros_data):
         '''Callback function of subscribed topic. 
         Here images get converted and features detected'''
@@ -50,8 +66,12 @@ class image_feature:
 		print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
 	if VERBOSE :
 		print ' len of data = "%d"' %  (len(ros_data.data))
-	self.sock.sendall(ros_data.data)
-	
+    self.image = ros_data.data
+    self.imageWidth = ros_data.width
+    self.imageHeight = ros_data.height
+    compressedImage = zlib.compress(inrange((0,145, 220), (80,188,255)), 9)
+	self.sock.sendall(compressedImage)
+
 
 
 def main(args):
