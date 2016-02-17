@@ -32,10 +32,8 @@ class image_feature:
 
     def __init__(self):
         '''Initialize ros subscriber'''
-	self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	self.sock.connect(('10.112.120.213', 8052))
-	
-	
+	   self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	   self.sock.connect(('10.112.120.213', 8052))
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/camera/image_raw",
             Image, self.callback,  queue_size = 1)
@@ -62,15 +60,15 @@ class image_feature:
     def callback(self, ros_data):
         '''Callback function of subscribed topic. 
         Here images get converted and features detected'''
-       	if VERBOSE : 
+       	if VERBOSE :
 		print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
-	if VERBOSE :
-		print ' len of data = "%d"' %  (len(ros_data.data))
-    self.image = ros_data.data
-    self.imageWidth = ros_data.width
-    self.imageHeight = ros_data.height
-    compressedImage = zlib.compress(inrange((0,145, 220), (80,188,255)), 9)
-	self.sock.sendall(compressedImage)
+    	if VERBOSE :
+    		print ' len of data = "%d"' %  (len(ros_data.data))
+        self.image = ros_data.data
+        self.imageWidth = ros_data.width
+        self.imageHeight = ros_data.height
+        compressedImage = zlib.compress(inrange((0,145, 220), (80,188,255)), 9)
+    	self.sock.sendall(compressedImage)
 
 
 
