@@ -67,11 +67,10 @@ class image_feature:
     	if VERBOSE :
     		print ' len of data = "%d"' %  (len(ros_data.data))
         self.image = bytearray(ros_data.data)
-        #print np.array(bytearray(self.image), dtype="uint8")
-	self.imageWidth = ros_data.width
+        self.imageWidth = ros_data.width
         self.imageHeight = ros_data.height
-        print self.inrange((0,43, 215), (80,90,255))
-	compressedImage = zlib.compress(''.join(map(str, self.inrange((0,145, 220), (80,188,255)))), 9)
+        #print self.inrange((0,43, 215), (80,90,255))
+	compressedImage = zlib.compress(''.join(map(str, self.inrange((0,43, 215), (80,90,255)))), 9)
         print 'Length of image i amd sending is "%d"' % (len(compressedImage))
     	self.sock.send(compressedImage, self.dataCenters[0])
 
