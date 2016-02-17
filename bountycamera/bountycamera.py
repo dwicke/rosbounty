@@ -51,7 +51,7 @@ class image_feature:
             if val < lowrange[curColor] or val > highrange[curColor]:
                 binaryImage[curIndex] &= 0
             curColor = (curColor + 1) % 3
-            if curColor == 0
+            if curColor == 0:
                 curIndex += 1
         return binaryImage
 
