@@ -48,7 +48,8 @@ class image_feature:
         binaryImage = [1 for i in xrange(self.imageWidth * self.imageHeight)]
         curIndex = 0
         for val in self.image:
-            if val < lowrange[curColor] or val > highrange[curColor]:
+	    #print "'%d'" % (val)
+	    if val < lowrange[curColor] or val > highrange[curColor]:
                 binaryImage[curIndex] &= 0
             curColor = (curColor + 1) % 3
             if curColor == 0:
@@ -65,10 +66,12 @@ class image_feature:
 		print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
     	if VERBOSE :
     		print ' len of data = "%d"' %  (len(ros_data.data))
-        self.image = ros_data.data
-        self.imageWidth = ros_data.width
+        self.image = bytearray(ros_data.data)
+        #print np.array(bytearray(self.image), dtype="uint8")
+	self.imageWidth = ros_data.width
         self.imageHeight = ros_data.height
-        compressedImage = zlib.compress(inrange((0,145, 220), (80,188,255)), 9)
+        print self.inrange((0,43, 215), (80,90,255))
+	compressedImage = zlib.compress(''.join(map(str, self.inrange((0,145, 220), (80,188,255)))), 9)
         print 'Length of image i amd sending is "%d"' % (len(compressedImage))
     	self.sock.send(compressedImage, self.dataCenters[0])
 
