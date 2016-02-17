@@ -4,14 +4,14 @@ import socket
 import rospy
 from geometry_msgs.msg import Twist
 
-def robot_vel(forward):
+def robot_vel(forward, angular):
     twist = Twist()
     twist.linear.x = forward
     twist.linear.y = 0
     twist.linear.z = 0
     twist.angular.x = 0
     twist.angular.y = 0
-    twist.angular.z = 0
+    twist.angular.z = angular
     pub.publish(twist)
 
 
@@ -45,9 +45,11 @@ if __name__ == "__main__":
 
         while not rospy.is_shutdown():
             data, addr = server_socket.recvfrom(1024)
-            data = float(data)
+	    data_ar = data.split(',')
+            forward = float(data_ar[0])
+	    ang = float(data_ar[1])
             print data
-            robot_vel(data)
+            robot_vel(forward, ang)
             
             
     except socket.error, msg:
