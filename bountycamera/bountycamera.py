@@ -32,9 +32,9 @@ class image_feature:
 
     def __init__(self):
         '''Initialize ros subscriber'''
-	   self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-       self.dataCenters = [['10.112.120.213', 8052]]
-	   self.sock.connect(('10.112.120.213', 8052))
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.dataCenters = [['10.112.120.213', 8052]]
+        self.sock.connect(('10.112.120.213', 8052))
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/camera/image_raw",
             Image, self.callback,  queue_size = 1)
