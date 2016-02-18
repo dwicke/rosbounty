@@ -36,7 +36,7 @@ class image_feature:
     def __init__(self):
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.dataCenters = [('10.112.120.203', 8052)]
+        self.dataCenters = [('10.112.120.196', 8052)]
         #self.sock.connect(('10.112.120.213', 8052))
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/camera/image_raw",
@@ -78,13 +78,13 @@ class image_feature:
         #print 'Length of image i amd sending is "%d"' % (len(compressedImage))
         #reducedimg = ''.join(map(str, self.inrange((0,43, 215), (80,90,255))))
         image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
-        hsv = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
         ORANGE_MIN = np.array([5, 50, 50],np.uint8)
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
-        thresh = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
-        reducedimg = self.inrange((0,43, 215), (80,90,255))
-        print len(reducedimg)
-    	self.sock.sendto(reducedimg, self.dataCenters[0])
+        reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
+        #reducedimg = self.inrange((0,43, 215), (80,90,255))
+        #print len(zlib.compress(reducedimg.tostring(), 9))
+    	self.sock.sendto(zlib.compress(reducedimg.tostring(), 9), self.dataCenters[0])
 
 
 
