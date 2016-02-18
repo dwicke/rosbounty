@@ -1,14 +1,5 @@
 #!/usr/bin/env python
-"""OpenCV feature detectors with ros CompressedImage Topics in python.
 
-This example subscribes to a ros topic containing sensor_msgs 
-CompressedImage. It converts the CompressedImage into a numpy.ndarray, 
-then detects and marks features in that image. It finally displays 
-and publishes the new image - again as CompressedImage topic.
-"""
-__author__ =  'Simon Haller <simon.haller at uibk.ac.at>'
-__version__=  '0.1'
-__license__ = 'BSD'
 # Python libs
 import sys, time
 
@@ -36,7 +27,16 @@ class image_feature:
     def __init__(self):
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # this list should be in ros...
         self.dataCenters = [('10.112.120.196', 8052)]
+
+        # publish a task message
+        # includes type/name (image blob) initial bounty, round trip deadline
+        # publish reward message
+        # winner ip, total time, reward
+
+
+
         #self.sock.connect(('10.112.120.213', 8052))
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/camera/image_raw",
