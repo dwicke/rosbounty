@@ -33,7 +33,7 @@ class image_feature:
     def __init__(self):
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.dataCenters = [('10.112.120.204', 8052)]
+        self.dataCenters = [('10.112.120.203', 8052)]
         #self.sock.connect(('10.112.120.213', 8052))
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/camera/image_raw",
@@ -70,7 +70,7 @@ class image_feature:
         self.imageWidth = ros_data.width
         self.imageHeight = ros_data.height
         #print self.inrange((0,43, 215), (80,90,255))
-	compressedImage = zlib.compress(''.join(map(str, self.inrange((0,43, 215), (80,90,255)))), 9)
+	compressedImage = zlib.compress(''.join(map(str, self.inrange((0,43, 215), (80,90,255)))), 2)
         print 'Length of image i amd sending is "%d"' % (len(compressedImage))
     	self.sock.sendto(compressedImage, self.dataCenters[0])
 

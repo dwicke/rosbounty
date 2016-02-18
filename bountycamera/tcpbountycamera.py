@@ -20,7 +20,7 @@ import numpy as np
 # Ros libraries
 import roslib
 import rospy
-
+import zlib
 import socket
 
 # Ros Messages
@@ -34,7 +34,7 @@ class image_feature:
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect(('10.112.120.203', 8052))
-  
+  	#self.sock.connect(('104.131.172.175', 8052))
   
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/camera/image_raw",
@@ -50,7 +50,8 @@ class image_feature:
     		print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
   	if VERBOSE :
     		print ' len of data = "%d"' %  (len(ros_data.data))
-  	self.sock.sendall(ros_data.data)
+  	#print 'size aftercompress: "%d"' % (len(zlib.compress(ros_data.data, 9)))
+	self.sock.sendall(ros_data.data)
   
 
 

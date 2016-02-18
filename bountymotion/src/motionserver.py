@@ -43,14 +43,18 @@ if __name__ == "__main__":
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         server_socket.bind(("0.0.0.0", port))
 
+	curFor = 0.0
+	curAng = 0.0
         while not rospy.is_shutdown():
             data, addr = server_socket.recvfrom(1024)
 	    data_ar = data.split(',')
             forward = float(data_ar[0])
 	    ang = float(data_ar[1])
-            print data
-            robot_vel(forward, ang)
-            
+	    if curFor != forward or curAng != ang:
+        	print data    
+		robot_vel(forward, ang)
+            	curFor = forward
+		curAng = ang
             
     except socket.error, msg:
         print 'Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
