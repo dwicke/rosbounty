@@ -27,6 +27,9 @@ import socket
 from sensor_msgs.msg import Image
 
 VERBOSE=False
+HEIGHT = 240
+WIDTH = 320
+CHANNELS = 3
 
 class image_feature:
 
