@@ -47,9 +47,9 @@ class image_feature:
         curColor = 0
         binaryImage = [1 for i in xrange(self.imageWidth * (self.imageHeight - 40))]
         curIndex = 0
-        for val in self.image:
+        for val in self.image[self.imageWidth * 40 * 3:]:
 	    #print "'%d'" % (val)
-	    if (curIndex >= self.imageWidth * 40) and (val < lowrange[curColor] or val > highrange[curColor]):
+	    if (val < lowrange[curColor] or val > highrange[curColor]):
                 binaryImage[curIndex] &= 0
             curColor = (curColor + 1) % 3
             if curColor == 0:
