@@ -73,7 +73,8 @@ class image_feature:
         #print self.inrange((0,43, 215), (80,90,255))
 	#compressedImage = zlib.compress(''.join(map(str, self.inrange((0,43, 215), (80,90,255)))), 2)
         #print 'Length of image i amd sending is "%d"' % (len(compressedImage))
-        reducedimg = ''.join(map(str, self.inrange((0,43, 215), (80,90,255))))
+        #reducedimg = ''.join(map(str, self.inrange((0,43, 215), (80,90,255))))
+        reducedimg = self.inrange((0,43, 215), (80,90,255))
         print len(reducedimg)
     	self.sock.sendto(reducedimg, self.dataCenters[0])
 
