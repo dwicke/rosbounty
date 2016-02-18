@@ -15,7 +15,7 @@ import sys, time
 # numpy and scipy
 import numpy as np
 #from scipy.ndimage import filters
-
+import cv2
 
 # Ros libraries
 import roslib
@@ -74,6 +74,11 @@ class image_feature:
 	#compressedImage = zlib.compress(''.join(map(str, self.inrange((0,43, 215), (80,90,255)))), 2)
         #print 'Length of image i amd sending is "%d"' % (len(compressedImage))
         #reducedimg = ''.join(map(str, self.inrange((0,43, 215), (80,90,255))))
+        image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
+        hsv = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
+        ORANGE_MIN = np.array([5, 50, 50],np.uint8)
+        ORANGE_MAX = np.array([15, 255, 255],np.uint8)
+        thresh = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
         reducedimg = self.inrange((0,43, 215), (80,90,255))
         print len(reducedimg)
     	self.sock.sendto(reducedimg, self.dataCenters[0])
