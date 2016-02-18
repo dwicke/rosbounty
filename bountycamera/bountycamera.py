@@ -70,9 +70,10 @@ class image_feature:
         self.imageWidth = ros_data.width
         self.imageHeight = ros_data.height
         #print self.inrange((0,43, 215), (80,90,255))
-	compressedImage = zlib.compress(''.join(map(str, self.inrange((0,43, 215), (80,90,255)))), 2)
-        print 'Length of image i amd sending is "%d"' % (len(compressedImage))
-    	self.sock.sendto(compressedImage, self.dataCenters[0])
+	#compressedImage = zlib.compress(''.join(map(str, self.inrange((0,43, 215), (80,90,255)))), 2)
+        #print 'Length of image i amd sending is "%d"' % (len(compressedImage))
+
+    	self.sock.sendto(''.join(map(str, self.inrange((0,43, 215), (80,90,255)))), self.dataCenters[0])
 
 
 
