@@ -32,8 +32,8 @@ class image_feature:
 
     def __init__(self):
         '''Initialize ros subscriber'''
-  self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  self.sock.connect(('10.112.120.213', 8052))
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect(('10.112.120.213', 8052))
   
   
         # subscribed Topic
