@@ -45,23 +45,6 @@ class image_feature:
             print "subscribed to /camera/image/compressed"
 
 
-    ## pixels are ordered BGR
-    def inrange(self, lowrange, highrange):
-        curColor = 0
-        binaryImage = ''
-        binaryPix = 1
-        curIndex = 0
-        for val in self.image[self.imageWidth * 40 * 3:]:
-            if (val < lowrange[curColor] or val > highrange[curColor]):
-                binaryPix &= 0
-            curColor = (curColor + 1) % 3
-            if curColor == 0:
-                binaryImage += str(binaryPix)
-                curIndex += 1
-        return binaryImage
-
-
-
 
     def callback(self, ros_data):
         '''Callback function of subscribed topic. 
@@ -71,18 +54,11 @@ class image_feature:
     	if VERBOSE :
     		print ' len of data = "%d"' %  (len(ros_data.data))
         self.image = bytearray(ros_data.data)
-        self.imageWidth = ros_data.width
-        self.imageHeight = ros_data.height
-        #print self.inrange((0,43, 215), (80,90,255))
-	#compressedImage = zlib.compress(''.join(map(str, self.inrange((0,43, 215), (80,90,255)))), 2)
-        #print 'Length of image i amd sending is "%d"' % (len(compressedImage))
-        #reducedimg = ''.join(map(str, self.inrange((0,43, 215), (80,90,255))))
         image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
         hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
         ORANGE_MIN = np.array([5, 50, 50],np.uint8)
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
-        #reducedimg = self.inrange((0,43, 215), (80,90,255))
         #print len(zlib.compress(reducedimg.tostring(), 9))
     	self.sock.sendto(zlib.compress(reducedimg.tostring(), 9), self.dataCenters[0])
 
