@@ -33,7 +33,7 @@ class image_feature:
     def __init__(self):
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect(('10.112.120.213', 8052))
+        self.sock.connect(('10.112.120.203', 8052))
   
   
         # subscribed Topic
@@ -47,10 +47,10 @@ class image_feature:
         '''Callback function of subscribed topic. 
         Here images get converted and features detected'''
         if VERBOSE : 
-    print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
-  if VERBOSE :
-    print ' len of data = "%d"' %  (len(ros_data.data))
-  self.sock.sendall(ros_data.data)
+    		print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
+  	if VERBOSE :
+    		print ' len of data = "%d"' %  (len(ros_data.data))
+  	self.sock.sendall(ros_data.data)
   
 
 
