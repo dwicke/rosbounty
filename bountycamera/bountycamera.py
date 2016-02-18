@@ -16,6 +16,7 @@ import socket
 
 # Ros Messages
 from sensor_msgs.msg import Image
+from task.msg import task
 
 VERBOSE=False
 HEIGHT = 240
