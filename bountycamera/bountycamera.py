@@ -45,14 +45,15 @@ class image_feature:
     ## pixels are ordered BGR
     def inrange(self, lowrange, highrange):
         curColor = 0
-        binaryImage = [1 for i in xrange(self.imageWidth * (self.imageHeight - 40))]
+        binaryImage = ''
+        binaryPix = 1
         curIndex = 0
         for val in self.image[self.imageWidth * 40 * 3:]:
-	    #print "'%d'" % (val)
-	    if (val < lowrange[curColor] or val > highrange[curColor]):
-                binaryImage[curIndex] &= 0
+            if (val < lowrange[curColor] or val > highrange[curColor]):
+                binaryPix &= 0
             curColor = (curColor + 1) % 3
             if curColor == 0:
+                binaryImage += str(binaryPix)
                 curIndex += 1
         return binaryImage
 
