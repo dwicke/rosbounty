@@ -9,7 +9,7 @@ import numpy as np
 # Ros libraries
 import roslib
 import rospy
-
+import json
 import socket
 from bountybondsman.msg import task
 
@@ -51,10 +51,10 @@ class bondsman:
             uint32 outputPort
         Here tasks that get forwarded on to bounty hunters'''
 	msgdata = [ros_data.taskName, ros_data.bountyHunters, ros_data.initialBounty, ros_data.bountyRate, ros_data.deadline, ros_data.inputPort, ros_data.outputPort]
-	print str(msgdata)
+	print str(json.dumps(msgdata))
         self.taskList[ros_data.taskName] = ros_data
         for bountyHunter in ros_data.bountyHunters:
-            self.sock.sendto(str(msgdata), (bountyHunter, PORT))
+            self.sock.sendto(json.dumps(msgdata), (bountyHunter, PORT))
 
 
 def main(args):
