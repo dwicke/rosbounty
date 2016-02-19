@@ -44,6 +44,8 @@ class image_feature:
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/camera/image_raw",
             Image, self.callback,  queue_size = 1)
+
+        ## need to then subscribe to
         if VERBOSE :
             print "subscribed to /camera/image/compressed"
 
@@ -62,8 +64,10 @@ class image_feature:
         ORANGE_MIN = np.array([5, 50, 50],np.uint8)
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
+        data = "%s\n%s\n%s" % (str(self.id), str(time.time()), reducedimg.tostring())
+
         #print len(zlib.compress(reducedimg.tostring(), 9))
-    	self.sock.sendto(zlib.compress(reducedimg.tostring(), 9), self.dataCenters[0])
+    	self.sock.sendto(zlib.compress(data, 9), self.dataCenters[0])
 
     def publishTask(self):
         ''' task message is published
@@ -78,7 +82,7 @@ class image_feature:
         msg = task()
         msg.taskName = "visualServoing"
         # me, nyc, sfo
-        msg.bountyHunters = ["10.112.120.196", "104.131.172.175", "45.55.11.33"]
+        msg.bountyHunters = ["10.112.120.193", "104.131.172.175", "45.55.11.33"]
         msg.initialBounty = 100
         msg.bountyRate = 1
         msg.deadline = 20
