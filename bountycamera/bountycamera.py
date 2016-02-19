@@ -31,7 +31,7 @@ class image_feature:
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # this list should be in ros...
-        self.dataCenters = [('10.112.120.196', PORT)]
+        self.dataCenters = [('10.112.120.196', INPORT)]
 
         # publish a task message
         # includes type/name (image blob) initial bounty, round trip deadline

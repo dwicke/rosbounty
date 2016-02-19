@@ -42,10 +42,19 @@ class bondsman:
 
     def taskCallback(self, ros_data):
         '''Callback function of subscribed topic.
+	    string taskName
+            string[] bountyHunters
+            float64 initialBounty
+            float64 bountyRate
+            float64 deadline
+            uint32 inputPort
+            uint32 outputPort
         Here tasks that get forwarded on to bounty hunters'''
+	msgdata = [ros_data.taskName, ros_data.bountyHunters, ros_data.initialBounty, ros_data.bountyRate, ros_data.deadline, ros_data.inputPort, ros_data.outputPort]
+	print str(msgdata)
         self.taskList[ros_data.taskName] = ros_data
         for bountyHunter in ros_data.bountyHunters:
-            self.sock.sendto(ros_data, (bountyHunter, PORT))
+            self.sock.sendto(str(msgdata), (bountyHunter, PORT))
 
 
 def main(args):
