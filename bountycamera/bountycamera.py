@@ -32,7 +32,7 @@ class image_feature:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # this list should be in ros...
         self.dataCenters = [('10.112.120.193', INPORT)]
-
+	self.id = 0
         # publish a task message
         # includes type/name (image blob) initial bounty, round trip deadline
         # publish reward message
@@ -65,8 +65,8 @@ class image_feature:
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
         data = "%s\n%s\n%s" % (str(self.id), str(time.time()), reducedimg.tostring())
-
-        #print len(zlib.compress(reducedimg.tostring(), 9))
+	self.id += 1
+        print len(zlib.compress(data, 9))
     	self.sock.sendto(zlib.compress(data, 9), self.dataCenters[0])
 
     def publishTask(self):
