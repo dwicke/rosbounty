@@ -22,6 +22,8 @@ VERBOSE=False
 HEIGHT = 240
 WIDTH = 320
 CHANNELS = 3
+INPORT = 8052
+OUTPORT = 15000
 
 class image_feature:
 
@@ -29,14 +31,14 @@ class image_feature:
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # this list should be in ros...
-        self.dataCenters = [('10.112.120.196', 8052)]
+        self.dataCenters = [('10.112.120.196', PORT)]
 
         # publish a task message
         # includes type/name (image blob) initial bounty, round trip deadline
         # publish reward message
         # winner ip, total time, reward
 
-
+        self.taskPub = rospy.Publisher('/bountybondsman/task', task, queue_size=10)
 
         #self.sock.connect(('10.112.120.213', 8052))
         # subscribed Topic
@@ -63,12 +65,34 @@ class image_feature:
         #print len(zlib.compress(reducedimg.tostring(), 9))
     	self.sock.sendto(zlib.compress(reducedimg.tostring(), 9), self.dataCenters[0])
 
+    def publishTask(self):
+        ''' task message is published
+            string taskName
+            string[] bountyHunters
+            float64 initialBounty
+            float64 bountyRate
+            float64 deadline
+            uint32 inputPort
+            uint32 outputPort
+        '''
+        msg = task()
+        msg.taskName = "visualServoing"
+        # me, nyc, sfo
+        msg.bountyHunters = ["10.112.120.196", "104.131.172.175", "45.55.11.33"]
+        msg.initialBounty = 100
+        msg.bountyRate = 1
+        msg.deadline = 20
+        msg.inputPort = INPORT
+        msg.outputPort = OUTPORT
+
+        self.taskPub.publish(msg)
 
 
 def main(args):
     '''Initializes and cleanup ros node'''
     ic = image_feature()
-    rospy.init_node('image_feature', anonymous=True)
+    rospy.init_node('bountycamera', anonymous=True)
+    ic.publishTask()
     try:
         rospy.spin()
     except KeyboardInterrupt:
