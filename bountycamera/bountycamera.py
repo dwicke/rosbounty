@@ -31,7 +31,7 @@ class image_feature:
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # this list should be in ros...
-        self.dataCenters = [('10.112.120.196', INPORT)]
+        self.dataCenters = [('10.112.120.193', INPORT)]
 
         # publish a task message
         # includes type/name (image blob) initial bounty, round trip deadline
@@ -78,7 +78,7 @@ class image_feature:
         msg = task()
         msg.taskName = "visualServoing"
         # me, nyc, sfo
-        msg.bountyHunters = ["10.112.120.196", "104.131.172.175", "45.55.11.33"]
+        msg.bountyHunters = ["10.112.120.193", "104.131.172.175", "45.55.11.33"]
         msg.initialBounty = 100
         msg.bountyRate = 1
         msg.deadline = 20
