@@ -1,3 +1,5 @@
 string task
-string winner
-float64 bounty
+uint32 taskID
+string winnerIP
+float64 totalTime
+

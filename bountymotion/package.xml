@@ -51,6 +51,8 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>std_srvs</build_depend>
   <build_depend>tf</build_depend>
+  <build_depend>bountybondsman</build_depend>
+  <run_depend>bountybondsman</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>libaria</run_depend>
