@@ -2,6 +2,7 @@
 
 import socket
 import rospy
+import time
 from geometry_msgs.msg import Twist
 
 def robot_vel(forward, angular):
@@ -22,19 +23,14 @@ def shutdown():
     # close the server
     server_socket.close()
 
-    
-
-
-
 
 if __name__ == "__main__":
-   
+
     rospy.init_node('motionserver', anonymous=True)
     global pub
     pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
     rate = rospy.Rate(10) # 10hz
 
-    
     rospy.on_shutdown(shutdown)
 
     try:
@@ -43,29 +39,29 @@ if __name__ == "__main__":
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         server_socket.bind(("0.0.0.0", port))
 
-	curFor = 0.0
-	curAng = 0.0
+        curFor = 0.0
+        curAng = 0.0
+        preID = -1
         while not rospy.is_shutdown():
             data, addr = server_socket.recvfrom(1024)
-	    data_ar = data.split(',')
+            curtime = time.time()
+            data_ar = data.split(',')
+            recvID = int(data_ar[2])
+            recvTS = float(data_ar[3])
             forward = float(data_ar[0])
-	    ang = float(data_ar[1])
-	    if curFor != forward or curAng != ang:
-        	print data    
-		robot_vel(forward, ang)
-            	curFor = forward
-		curAng = ang
-            
+            ang = float(data_ar[1])
+
+            if recvID > preID:
+                preID = recvID
+                if curFor != forward or curAng != ang:
+                    print data
+                    robot_vel(forward, ang)
+                    curFor = forward
+                    curAng = ang
+                # now send the success message
+
     except socket.error, msg:
         print 'Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
         pass
-        
-
-    
-
-    
-
-
-    
 
 
