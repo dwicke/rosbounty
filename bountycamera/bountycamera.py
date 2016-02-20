@@ -17,6 +17,7 @@ import socket
 # Ros Messages
 from sensor_msgs.msg import Image
 from bountybondsman.msg import task
+from bountybondsman.msg import success
 
 VERBOSE=False
 HEIGHT = 240
@@ -32,13 +33,16 @@ class image_feature:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # this list should be in ros...
         self.dataCenters = [('10.112.120.193', INPORT)]
-	self.id = 0
+        self.id = 0
         # publish a task message
         # includes type/name (image blob) initial bounty, round trip deadline
         # publish reward message
         # winner ip, total time, reward
 
         self.taskPub = rospy.Publisher('/bountybondsman/task', task, queue_size=10)
+
+        self.subscriber = rospy.Subscriber("/bountybondsman/success",
+            success, self.successCallback,  queue_size = 1)
 
         #self.sock.connect(('10.112.120.213', 8052))
         # subscribed Topic
@@ -49,15 +53,17 @@ class image_feature:
         if VERBOSE :
             print "subscribed to /camera/image/compressed"
 
+    def successCallback(self, ros_data):
+        ''' using the success message reorder the list of bounty hunters'''
 
 
     def callback(self, ros_data):
         '''Callback function of subscribed topic. 
         Here images get converted and features detected'''
-       	if VERBOSE :
-		print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
-    	if VERBOSE :
-    		print ' len of data = "%d"' %  (len(ros_data.data))
+        if VERBOSE :
+        print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
+        if VERBOSE :
+            print ' len of data = "%d"' %  (len(ros_data.data))
         self.image = bytearray(ros_data.data)
         image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
         hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
@@ -65,9 +71,9 @@ class image_feature:
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
         data = "%s\n%s\n%s" % (str(self.id), str(time.time()), reducedimg.tostring())
-	self.id += 1
+        self.id += 1
         print len(zlib.compress(data, 9))
-    	self.sock.sendto(zlib.compress(data, 9), self.dataCenters[0])
+        self.sock.sendto(zlib.compress(data, 9), self.dataCenters[0])
 
     def publishTask(self):
         ''' task message is published

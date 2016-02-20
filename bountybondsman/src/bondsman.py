@@ -12,6 +12,7 @@ import rospy
 import json
 import socket
 from bountybondsman.msg import task
+from bountybondsman.msg import success
 
 PORT = 14000
 
@@ -29,6 +30,8 @@ class bondsman:
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/bountybondsman/task",
             task, self.taskCallback,  queue_size = 1)
+        self.subscriber = rospy.Subscriber("/bountybondsman/success",
+            success, self.successCallback,  queue_size = 1)
 
         if VERBOSE :
             print "subscribed to /bountybondsman/task"
@@ -36,9 +39,16 @@ class bondsman:
 
     def successCallback(self, ros_data):
         '''Callback function of subscribed topic.
-        Here success messages get sent to the bounty hunters'''
+        Here success messages get sent to the bounty hunters
+        string task
+        uint32 taskID
+        string winnerIP
+        float64 totalTime
+        '''
+
+        msgdata = ['success', ros_data.task, ros_data.taskID, ros_data.winnerIP, ros_data.totalTime]
         for bountyHunter in self.taskList[ros_data.task].bountyHunters:
-            self.sock.sendto(ros_data, (bountyHunter, PORT))
+            self.sock.sendto(json.dumps(msgdata), (bountyHunter, PORT))
 
     def taskCallback(self, ros_data):
         '''Callback function of subscribed topic
@@ -50,8 +60,8 @@ class bondsman:
             uint32 inputPort
             uint32 outputPort
         Here tasks that get forwarded on to bounty hunters'''
-	msgdata = ['task', ros_data.taskName, ros_data.bountyHunters, ros_data.initialBounty, ros_data.bountyRate, ros_data.deadline, ros_data.inputPort, ros_data.outputPort]
-	print str(json.dumps(msgdata))
+        msgdata = ['task', ros_data.taskName, ros_data.bountyHunters, ros_data.initialBounty, ros_data.bountyRate, ros_data.deadline, ros_data.inputPort, ros_data.outputPort]
+        print str(json.dumps(msgdata))
         self.taskList[ros_data.taskName] = ros_data
         for bountyHunter in ros_data.bountyHunters:
             self.sock.sendto(json.dumps(msgdata), (bountyHunter, PORT))
