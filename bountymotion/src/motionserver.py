@@ -75,6 +75,7 @@ if __name__ == "__main__":
         udpCon = ConnectionManager('udp')
         udpCon.addClient('104.131.172.175', port)
         udpCon.addClient('10.112.120.247', port)
+        udpCon.addClient('45.55.11.33', port)
         udpCon.send('HI I am udp motion message')
         while len(udpCon.recv(1)) == 0:
             udpCon.send('HI I am udp motion message')
@@ -96,7 +97,7 @@ if __name__ == "__main__":
             if recvID > preID:
                 preID = recvID
                 if curFor != forward or curAng != ang:
-                    print "forward: %d ang: %d" % (forward, ang)
+                    print "forward: %d ang: %d from %s" % (forward, ang, addr)
                     robot_vel(forward, ang)
                     curFor = forward
                     curAng = ang
