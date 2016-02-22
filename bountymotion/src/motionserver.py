@@ -38,13 +38,15 @@ def sendSuccess(task, taskID, winnerIP, totalTime):
 def decideWinner(recvData):
     maxID = -1
     curWinner = None
+    winnerIP = None
     for datum in recvData:
-        data_ar = datum[0].split(',')
+        data_ar = datum[1].split(',')
         recvID = int(data_ar[2])
         if recvID > maxID:
             maxID = recvID
             curWinner = data_ar
-    return curWinner
+            winnerIP = datum[1][0]
+    return curWinner, winnerIP
 
 def shutdown():
     # stop the robot
@@ -82,7 +84,7 @@ if __name__ == "__main__":
         preID = -1
         while not rospy.is_shutdown():
             recvData = udpCon.recv()
-            data_ar = decideWinner(recvData)
+            data_ar, addr = decideWinner(recvData)
             curtime = time.time()
             recvID = int(data_ar[2])
             recvTS = float(data_ar[3])
@@ -100,7 +102,7 @@ if __name__ == "__main__":
                     curAng = ang
                 # now send the success message
                 # task, taskID, winnerIP, totalTime
-                sendSuccess(taskName, recvID, addr[0],totalTime)
+                sendSuccess(taskName, recvID,totalTime)
 
     except socket.error, msg:
         print 'Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
