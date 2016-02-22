@@ -102,7 +102,7 @@ if __name__ == "__main__":
                     curAng = ang
                 # now send the success message
                 # task, taskID, winnerIP, totalTime
-                sendSuccess(taskName, recvID,totalTime)
+                sendSuccess(taskName, recvID, addr, totalTime)
 
     except socket.error, msg:
         print 'Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
