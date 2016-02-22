@@ -70,7 +70,8 @@ class image_feature:
         ORANGE_MIN = np.array([5, 50, 50],np.uint8)
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
-        data = "%s\n%s\n%s" % (str(self.id), str(time.time()), reducedimg.tostring())
+        data = "%s,%s,%s" % (str(self.id), str(time.time()), reducedimg.tostring())
+        print zlib.decompress(data).split( )
         self.id += 1
         print len(zlib.compress(data, 9))
         self.distributeData(zlib.compress(data, 9))
