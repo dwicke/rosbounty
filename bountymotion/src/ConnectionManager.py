@@ -76,7 +76,7 @@ class ConnectionManager(object):
                 sock.sendto(data, self.clientIPPort[sock])
         return True
 
-    def recv(self, port=None):
+    def recv(self, timeout=None):
         '''
         blocking recv until one of the server sockets has
         for udp
@@ -86,10 +86,10 @@ class ConnectionManager(object):
         recvData = []
         ssock = self.clientsock
 
-
+        recvData = None
         if self.isServer == True:
             ssock = [self.server_socket]
-        ready_socks,_,_ = select.select(ssock, [], [])
+        ready_socks,_,_ = select.select(ssock, [], [], timeout)
         for sock in ready_socks:
             data, addr = sock.recvfrom(4096) # This is will not block
             if self.connType == 'tcp' and self.isServer == False:
