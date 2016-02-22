@@ -40,8 +40,7 @@ def decideWinner(recvData):
     curWinner = None
     winnerIP = None
     for datum in recvData:
-        print "I got %s" % (str(datum))
-        data_ar = datum[1].split(',')
+        data_ar = datum[0].split(',')
         recvID = int(data_ar[2])
         if recvID > maxID:
             maxID = recvID
