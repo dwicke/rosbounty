@@ -88,7 +88,7 @@ if __name__ == "__main__":
             curtime = time.time()
             recvID = int(data_ar[2])
             recvTS = float(data_ar[3])
-            taskName = data_ar[4]
+            taskName = data_ar[4].strip()
             forward = float(data_ar[0])
             ang = float(data_ar[1])
             totalTime = curtime - recvTS
