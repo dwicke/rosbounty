@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
 
         udpCon = ConnectionManager('udp')
-        udpCon.addClient('10.112.120.193', port)
+        udpCon.addClient('104.131.172.175', port)
         udpCon.addClient('10.112.120.247', port)
         udpCon.send('HI I am udp motion message')
 
