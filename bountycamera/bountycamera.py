@@ -73,7 +73,7 @@ class image_feature:
         data = "%s,%s,%s" % (str(self.id), str(time.time()), reducedimg.tostring())
         self.id += 1
         print len(zlib.compress(data, 9))
-        self.distributeData(zlib.compress(data, 9))
+        self.distributeData(data)
 
     def distributeData(self, data):
         for datacenter in self.dataCenters:

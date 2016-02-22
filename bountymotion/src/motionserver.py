@@ -51,7 +51,7 @@ def shutdown():
     robot_vel(0,0)
 
     # close the server
-    server_socket.close()
+    #server_socket.close()
 
 
 if __name__ == "__main__":
