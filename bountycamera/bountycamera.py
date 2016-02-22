@@ -71,6 +71,7 @@ class image_feature:
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
         data = "%s,%s,%s" % (str(self.id), str(time.time()), reducedimg.tostring())
+        print "id sent: %s" % (str(self.id))
         self.id += 1
         print len(zlib.compress(data, 9))
         self.distributeData(data)
