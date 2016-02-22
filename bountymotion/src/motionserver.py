@@ -76,7 +76,7 @@ if __name__ == "__main__":
         udpCon.send('HI I am udp motion message')
         while udpCon.recv(1) == None:
             udpCon.send('HI I am udp motion message')
-
+        print 'Recved something...?'
         curFor = 0.0
         curAng = 0.0
         preID = -1
