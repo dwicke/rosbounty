@@ -48,7 +48,7 @@ def decideWinner(recvData):
 
 def shutdown():
     # stop the robot
-    robot_vel(0)
+    robot_vel(0,0)
 
     # close the server
     server_socket.close()
