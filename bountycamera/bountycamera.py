@@ -61,7 +61,7 @@ class image_feature:
         '''Callback function of subscribed topic. 
         Here images get converted and features detected'''
         if VERBOSE :
-        print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
+        	print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
         if VERBOSE :
             print ' len of data = "%d"' %  (len(ros_data.data))
         self.image = bytearray(ros_data.data)
