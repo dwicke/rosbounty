@@ -94,7 +94,7 @@ if __name__ == "__main__":
             if recvID > preID:
                 preID = recvID
                 if curFor != forward or curAng != ang:
-                    print data
+                    print "forward: %d ang: %d" % (forward, ang)
                     robot_vel(forward, ang)
                     curFor = forward
                     curAng = ang
