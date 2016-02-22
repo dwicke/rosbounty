@@ -86,7 +86,6 @@ class ConnectionManager(object):
         recvData = []
         ssock = self.clientsock
 
-        recvData = None
         if self.isServer == True:
             ssock = [self.server_socket]
         ready_socks,_,_ = select.select(ssock, [], [], timeout)
