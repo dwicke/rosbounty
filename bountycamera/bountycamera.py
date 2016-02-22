@@ -73,7 +73,11 @@ class image_feature:
         data = "%s\n%s\n%s" % (str(self.id), str(time.time()), reducedimg.tostring())
         self.id += 1
         print len(zlib.compress(data, 9))
-        self.sock.sendto(zlib.compress(data, 9), self.dataCenters[0])
+        distributeData(zlib.compress(data, 9))
+
+    def distributeData(self, data):
+        for datacenter in self.dataCenters:
+            self.sock.sendto(zlib.compress(data, 9), datacenter)
 
     def publishTask(self):
         ''' task message is published

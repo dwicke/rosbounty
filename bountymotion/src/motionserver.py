@@ -5,6 +5,8 @@ import rospy
 import time
 from geometry_msgs.msg import Twist
 from bountybondsman.msg import success
+from ConnectionManager import ConnectionManager
+
 
 def robot_vel(forward, angular):
     twist = Twist()
@@ -33,6 +35,17 @@ def sendSuccess(task, taskID, winnerIP, totalTime):
 
 
 
+def decideWinner(recvData):
+    maxID = -1
+    curWinner = None
+    for datum in recvData:
+        data_ar = datum[0].split(',')
+        recvID = int(data_ar[2])
+        if recvID > maxID:
+            maxID = recvID
+            curWinner = data_ar
+    return curWinner
+
 def shutdown():
     # stop the robot
     robot_vel(0)
@@ -55,17 +68,20 @@ if __name__ == "__main__":
 
     try:
         port = 15000
-        global server_socket
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        server_socket.bind(("0.0.0.0", port))
+
+
+        udpCon = ConnectionManager('udp')
+        udpCon.addClient('10.112.120.193', port)
+        udpCon.addClient('10.112.120.247', port)
+        udpCon.send('HI I am udp motion message')
 
         curFor = 0.0
         curAng = 0.0
         preID = -1
         while not rospy.is_shutdown():
-            data, addr = server_socket.recvfrom(1024)
+            recvData = udpCon.recv()
+            data_ar = decideWinner(recvData)
             curtime = time.time()
-            data_ar = data.split(',')
             recvID = int(data_ar[2])
             recvTS = float(data_ar[3])
             taskName = data_ar[4]
