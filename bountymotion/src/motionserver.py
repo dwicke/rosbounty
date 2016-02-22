@@ -74,7 +74,7 @@ if __name__ == "__main__":
         udpCon.addClient('104.131.172.175', port)
         udpCon.addClient('10.112.120.247', port)
         udpCon.send('HI I am udp motion message')
-        while udpCon.recv(1) == None:
+        while len(udpCon.recv(1)) == 0:
             udpCon.send('HI I am udp motion message')
         print 'Recved something...?'
         curFor = 0.0
