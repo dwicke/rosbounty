@@ -74,12 +74,11 @@ class image_feature:
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
         # increase the bounty until get a success message and then reset it.
-        data = "%s,%s,%s,%s" % (str(self.id), str(time.time()), str(self.currBounty) reducedimg.tostring())
+        data = "%s,%s,%s" % (str(self.id), str(time.time()), reducedimg.tostring())
         #print "id sent: %s" % (str(self.id))
         self.id += 1
         #print len(zlib.compress(data, 9))
         self.distributeData(data)
-        self.
         # if latency >= self.THRESHOLD:
         #     # publish task with higher bounty
         #     self.THRESHOLD *= self.THRESHOLD # if this doesn't work try exponential
