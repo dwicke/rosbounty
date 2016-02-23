@@ -40,12 +40,13 @@ def decideWinner(recvData):
     curWinner = None
     winnerIP = None
     for datum in recvData:
-        data_ar = datum[0].split(',')
-        recvID = int(data_ar[2])
-        if recvID > maxID:
-            maxID = recvID
-            curWinner = data_ar
-            winnerIP = datum[1][0]
+        if datum[0] != 'connected':
+            data_ar = datum[0].split(',')
+            recvID = int(data_ar[2])
+            if recvID > maxID:
+                maxID = recvID
+                curWinner = data_ar
+                winnerIP = datum[1][0]
     return curWinner, winnerIP
 
 def shutdown():
@@ -86,24 +87,25 @@ if __name__ == "__main__":
         while not rospy.is_shutdown():
             recvData = udpCon.recv()
             data_ar, addr = decideWinner(recvData)
-            curtime = time.time()
-            recvID = int(data_ar[2])
-            recvTS = float(data_ar[3])
-            taskName = data_ar[4].strip()
-            forward = float(data_ar[0])
-            ang = float(data_ar[1])
-            totalTime = curtime - recvTS
+            if addr != None
+                curtime = time.time()
+                recvID = int(data_ar[2])
+                recvTS = float(data_ar[3])
+                taskName = data_ar[4].strip()
+                forward = float(data_ar[0])
+                ang = float(data_ar[1])
+                totalTime = curtime - recvTS
 
-            if recvID > preID:
-                preID = recvID
-                if curFor != forward or curAng != ang:
-                    print "forward: %d ang: %d from %s" % (forward, ang, addr)
-                    robot_vel(forward, ang)
-                    curFor = forward
-                    curAng = ang
-                # now send the success message
-                # task, taskID, winnerIP, totalTime
-                sendSuccess(taskName, recvID, addr, totalTime)
+                if recvID > preID:
+                    preID = recvID
+                    if curFor != forward or curAng != ang:
+                        print "forward: %d ang: %d from %s" % (forward, ang, addr)
+                        robot_vel(forward, ang)
+                        curFor = forward
+                        curAng = ang
+                    # now send the success message
+                    # task, taskID, winnerIP, totalTime
+                    sendSuccess(taskName, recvID, addr, totalTime)
 
     except socket.error, msg:
         print 'Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
