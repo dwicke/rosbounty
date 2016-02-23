@@ -36,6 +36,7 @@ class image_feature:
         self.id = 0
         self.initBounty = 30
         self.baseBounty = 30 # does not change
+        self.lastSuccess = time.time()
         # publish a task message
         # includes type/name (image blob) initial bounty, round trip deadline
         # publish reward message
