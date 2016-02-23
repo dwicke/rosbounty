@@ -34,6 +34,7 @@ class image_feature:
         # this list should be in ros...
         self.dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT),('45.55.11.33', INPORT)]
         self.id = 0
+        self.initBounty = 30
         # publish a task message
         # includes type/name (image blob) initial bounty, round trip deadline
         # publish reward message
@@ -55,7 +56,7 @@ class image_feature:
 
     def successCallback(self, ros_data):
         ''' using the success message reorder the list of bounty hunters'''
-
+        self.lastSuccess = time.time()
 
     def callback(self, ros_data):
         '''Callback function of subscribed topic. 
@@ -71,10 +72,18 @@ class image_feature:
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
         data = "%s,%s,%s" % (str(self.id), str(time.time()), reducedimg.tostring())
-        print "id sent: %s" % (str(self.id))
+        #print "id sent: %s" % (str(self.id))
         self.id += 1
-        print len(zlib.compress(data, 9))
+        #print len(zlib.compress(data, 9))
         self.distributeData(data)
+        if (time.time() - self.lastSuccess) >= self.THRESHOLD
+            # publish task with higher bounty
+            self.initBounty += 1
+            publishTask()
+        elif (time.time() - self.lastSuccess) < self.THRESHOLD
+            # I wonder what this would do????
+            self.initBounty -= 1
+            publishTask()
 
     def distributeData(self, data):
         for datacenter in self.dataCenters:
@@ -94,9 +103,9 @@ class image_feature:
         msg.taskName = "visualServoing"
         # me, nyc, sfo
         msg.bountyHunters = ["10.112.120.247", "104.131.172.175", "45.55.11.33"]
-        msg.initialBounty = 100
+        msg.initialBounty = self.initBounty
         msg.bountyRate = 1
-        msg.deadline = 20
+        msg.deadline = 30
         msg.inputPort = INPORT
         msg.outputPort = OUTPORT
 
