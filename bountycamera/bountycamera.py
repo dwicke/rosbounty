@@ -41,7 +41,7 @@ class image_feature:
         # includes type/name (image blob) initial bounty, round trip deadline
         # publish reward message
         # winner ip, total time, reward
-        self.THRESHOLD = 100
+        self.THRESHOLD = 10000
         self.taskPub = rospy.Publisher('/bountybondsman/task', task, queue_size=10)
 
         self.subscriber = rospy.Subscriber("/bountybondsman/success",
