@@ -87,7 +87,7 @@ if __name__ == "__main__":
         while not rospy.is_shutdown():
             recvData = udpCon.recv()
             data_ar, addr = decideWinner(recvData)
-            if addr != None
+            if addr != None:
                 curtime = time.time()
                 recvID = int(data_ar[2])
                 recvTS = float(data_ar[3])
