@@ -35,11 +35,12 @@ class image_feature:
         self.dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT),('45.55.11.33', INPORT)]
         self.id = 0
         self.initBounty = 30
+        self.baseBounty = 30 # does not change
         # publish a task message
         # includes type/name (image blob) initial bounty, round trip deadline
         # publish reward message
         # winner ip, total time, reward
-
+        self.THRESHOLD = 100
         self.taskPub = rospy.Publisher('/bountybondsman/task', task, queue_size=10)
 
         self.subscriber = rospy.Subscriber("/bountybondsman/success",
@@ -76,11 +77,11 @@ class image_feature:
         self.id += 1
         #print len(zlib.compress(data, 9))
         self.distributeData(data)
-        if (time.time() - self.lastSuccess) >= self.THRESHOLD
+        if (time.time() - self.lastSuccess)*1000 >= self.THRESHOLD:
             # publish task with higher bounty
             self.initBounty += 1
             publishTask()
-        elif (time.time() - self.lastSuccess) < self.THRESHOLD
+        elif (time.time() - self.lastSuccess)*1000 < self.THRESHOLD and self.initBounty > self.baseBounty:
             # I wonder what this would do????
             self.initBounty -= 1
             publishTask()
