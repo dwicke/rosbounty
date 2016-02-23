@@ -38,7 +38,7 @@ class bondsman:
             print "subscribed to /bountybondsman/task"
 
 
-    def taskResend(self, event)
+    def taskResend(self, event):
         # http://library.isr.ist.utl.pt/docs/roswiki/rospy(2f)Overview(2f)Time.html
         for task in self.taskMsg.keys():
             for bountyHunter in self.taskList[task].bountyHunters:
