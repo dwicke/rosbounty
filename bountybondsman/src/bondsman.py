@@ -26,6 +26,7 @@ class bondsman:
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.taskList = {}
+        self.taskMsg = {}
 
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/bountybondsman/task",
