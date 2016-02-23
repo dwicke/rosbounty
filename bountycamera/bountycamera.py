@@ -77,14 +77,17 @@ class image_feature:
         self.id += 1
         #print len(zlib.compress(data, 9))
         self.distributeData(data)
-        if (time.time() - self.lastSuccess)*1000 >= self.THRESHOLD:
+        latency = (time.time() - self.lastSuccess)*1000.0
+        if latency >= self.THRESHOLD:
             # publish task with higher bounty
             self.initBounty += 1
-            publishTask()
-        elif (time.time() - self.lastSuccess)*1000 < self.THRESHOLD and self.initBounty > self.baseBounty:
+            print "current latency: %f " % (latency)
+            self.publishTask()
+        elif latency < self.THRESHOLD and self.initBounty > self.baseBounty:
             # I wonder what this would do????
+            print "current latency: %f " % (latency)
             self.initBounty -= 1
-            publishTask()
+            self.publishTask()
 
     def distributeData(self, data):
         for datacenter in self.dataCenters:
