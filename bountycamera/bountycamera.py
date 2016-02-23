@@ -73,24 +73,25 @@ class image_feature:
         ORANGE_MIN = np.array([5, 50, 50],np.uint8)
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
-        data = "%s,%s,%s" % (str(self.id), str(time.time()), reducedimg.tostring())
+        # increase the bounty until get a success message and then reset it.
+        data = "%s,%s,%s,%s" % (str(self.id), str(time.time()), str(self.currBounty) reducedimg.tostring())
         #print "id sent: %s" % (str(self.id))
         self.id += 1
         #print len(zlib.compress(data, 9))
         self.distributeData(data)
-        latency = (time.time() - self.lastSuccess)*1000.0
-        if latency >= self.THRESHOLD:
-            # publish task with higher bounty
-            self.THRESHOLD *= self.THRESHOLD # if this doesn't work try exponential
-            self.initBounty += 1
-            print "current latency: %f " % (latency)
-            self.publishTask()
-        elif latency < self.THRESHOLD and self.initBounty > self.baseBounty:
-            # I wonder what this would do????
-            print "current latency: %f " % (latency)
-            self.THRESHOLD /= self.THRESHOLD
-            self.initBounty -= 1
-            self.publishTask()
+        self.
+        # if latency >= self.THRESHOLD:
+        #     # publish task with higher bounty
+        #     self.THRESHOLD *= self.THRESHOLD # if this doesn't work try exponential
+        #     self.initBounty += 1
+        #     print "current latency: %f " % (latency)
+        #     self.publishTask()
+        # elif latency < self.THRESHOLD and self.initBounty > self.baseBounty:
+        #     # I wonder what this would do????
+        #     print "current latency: %f " % (latency)
+        #     #self.THRESHOLD /= self.THRESHOLD
+        #     self.initBounty -= 1
+        #     self.publishTask()
 
     def distributeData(self, data):
         for datacenter in self.dataCenters:
