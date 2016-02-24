@@ -44,7 +44,7 @@ class bondsman:
         print 'Sending the task messages again!'
         for task in self.taskMsg.keys():
             for bountyHunter in self.taskList[task].bountyHunters:
-                self.sock.sendto(json.dumps(task), (bountyHunter, PORT))
+                self.sock.sendto(json.dumps(self.taskMsg[task]), (bountyHunter, PORT))
         print 'finished sending'
 
     def successCallback(self, ros_data):
