@@ -108,6 +108,8 @@ if __name__ == "__main__":
                     if totalTime < 0.045:
                         # task, taskID, winnerIP, totalTime
                         sendSuccess(taskName, recvID, addr, totalTime)
+                    #else:
+                        # condsider sending a success message with no one as the winner?...
 
     except socket.error, msg:
         print 'Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
