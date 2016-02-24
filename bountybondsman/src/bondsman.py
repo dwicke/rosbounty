@@ -33,17 +33,19 @@ class bondsman:
             task, self.taskCallback,  queue_size = 1)
         self.subscriber = rospy.Subscriber("/bountybondsman/success",
             success, self.successCallback,  queue_size = 1)
-        rospy.Timer(rospy.Duration(2), self.taskResend)
 
+        rospy.Timer(rospy.Duration(2), self.taskResend)
         if VERBOSE :
             print "subscribed to /bountybondsman/task"
 
 
     def taskResend(self, event):
         # http://library.isr.ist.utl.pt/docs/roswiki/rospy(2f)Overview(2f)Time.html
+        print 'Sending the task messages again!'
         for task in self.taskMsg.keys():
             for bountyHunter in self.taskList[task].bountyHunters:
                 self.sock.sendto(json.dumps(msgdata), (bountyHunter, PORT))
+        print 'finished sending'
 
     def successCallback(self, ros_data):
         '''Callback function of subscribed topic.
@@ -78,8 +80,9 @@ class bondsman:
 
 def main(args):
     '''Initializes and cleanup ros node'''
-    myBondsman = bondsman()
     rospy.init_node('bondsman', anonymous=True)
+    myBondsman = bondsman()
+
     try:
         rospy.spin()
     except KeyboardInterrupt:
