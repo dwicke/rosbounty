@@ -85,7 +85,8 @@ if __name__ == "__main__":
         curAng = 0.0
         preID = -1
         while not rospy.is_shutdown():
-            recvData = udpCon.recv()
+            recvData = udpCon.recv(0.3)
+            udpCon.send('HI I am udp motion message')
             data_ar, addr = decideWinner(recvData)
             if addr != None:
                 curtime = time.time()
