@@ -104,9 +104,10 @@ if __name__ == "__main__":
                         robot_vel(forward, ang)
                         curFor = forward
                         curAng = ang
-                    # now send the success message
-                    # task, taskID, winnerIP, totalTime
-                    sendSuccess(taskName, recvID, addr, totalTime)
+                    # now send the success message as long as the totalTime is less than the threshold
+                    if totalTime < 0.045:
+                        # task, taskID, winnerIP, totalTime
+                        sendSuccess(taskName, recvID, addr, totalTime)
 
     except socket.error, msg:
         print 'Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
