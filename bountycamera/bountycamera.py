@@ -32,7 +32,7 @@ class image_feature:
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # this list should be in ros...
-        self.dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT),('45.55.11.33', INPORT)]
+        self.dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT),('45.55.11.33', INPORT), ('10.112.120.41', INPORT)]
         self.id = 0
         self.initBounty = 30
         self.baseBounty = 30 # does not change
@@ -109,7 +109,7 @@ class image_feature:
         msg = task()
         msg.taskName = "visualServoing"
         # me, nyc, sfo
-        msg.bountyHunters = ["10.112.120.247", "104.131.172.175", "45.55.11.33"]
+        msg.bountyHunters = ["10.112.120.247", "104.131.172.175", "45.55.11.33","10.112.120.41"]
         msg.initialBounty = self.initBounty
         msg.bountyRate = 1
         msg.deadline = 30
