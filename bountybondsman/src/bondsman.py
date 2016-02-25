@@ -55,10 +55,12 @@ class bondsman:
         string winnerIP
         float64 totalTime
         '''
-
-        msgdata = ['success', ros_data.task, ros_data.taskID, ros_data.winnerIP, ros_data.totalTime]
+        msgdata = ['success', ros_data.task, ros_data.taskID, ros_data.winnerIP, ros_data.totalTime, ros_data.succCount, ros_data.recvCount]
         for bountyHunter in self.taskList[ros_data.task].bountyHunters:
             self.sock.sendto(json.dumps(msgdata), (bountyHunter, PORT))
+        if ros_data.taskID == -1:
+            ## then I'm done!
+            rospy.signal_shutdown("received succ with -1 id")
 
     def taskCallback(self, ros_data):
         '''Callback function of subscribed topic

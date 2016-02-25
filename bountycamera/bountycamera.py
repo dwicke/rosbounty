@@ -35,7 +35,6 @@ class image_feature:
         self.dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT),('45.55.11.33', INPORT), ('10.112.120.41', INPORT)]
         self.id = 0
         self.initBounty = 30
-        self.baseBounty = 30 # does not change
         self.lastSuccess = time.time()
         # publish a task message
         # includes type/name (image blob) initial bounty, round trip deadline
@@ -58,7 +57,10 @@ class image_feature:
 
     def successCallback(self, ros_data):
         ''' using the success message reorder the list of bounty hunters'''
-        self.lastSuccess = time.time()
+        if ros_data.taskID == -1:
+            ## then I'm done!
+            rospy.signal_shutdown("received succ with -1 id")
+
 
     def callback(self, ros_data):
         '''Callback function of subscribed topic. 
@@ -79,18 +81,6 @@ class image_feature:
         self.id += 1
         #print len(zlib.compress(data, 9))
         self.distributeData(data)
-        # if latency >= self.THRESHOLD:
-        #     # publish task with higher bounty
-        #     self.THRESHOLD *= self.THRESHOLD # if this doesn't work try exponential
-        #     self.initBounty += 1
-        #     print "current latency: %f " % (latency)
-        #     self.publishTask()
-        # elif latency < self.THRESHOLD and self.initBounty > self.baseBounty:
-        #     # I wonder what this would do????
-        #     print "current latency: %f " % (latency)
-        #     #self.THRESHOLD /= self.THRESHOLD
-        #     self.initBounty -= 1
-        #     self.publishTask()
 
     def distributeData(self, data):
         for datacenter in self.dataCenters:
