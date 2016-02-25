@@ -102,7 +102,7 @@ if __name__ == "__main__":
             count += 1
             curtime = time.time() # don't want to count the wasted time of the recv...
             if curtime - startTime >= 120.0:
-                startTime = curTime
+                startTime = curtime
                 succRate.append((frequency, succCount / recvCount))
                 print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
 
