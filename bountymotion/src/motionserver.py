@@ -93,7 +93,6 @@ if __name__ == "__main__":
         startTime = 0
         succCount = 0 # this is the total number of times sent succ message
         recvCount = 0 # this is the total number of times recv vel messages
-        succRate = []
         freqData = []
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
@@ -103,11 +102,9 @@ if __name__ == "__main__":
             curtime = time.time() # don't want to count the wasted time of the recv...
             if curtime - startTime >= 120.0:
                 startTime = curtime
-                succRate.append((frequency, succCount / recvCount))
-                print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
-
-                freqData.append((frequency, succCount / recvCount))
-
+                if frequency != 5:
+                    freqData.append((frequency, succCount / recvCount))
+                    print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
                 succCount = 0 # reset
                 recvCount = 0 # reset
                 frequency += 5
