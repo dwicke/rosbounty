@@ -105,7 +105,7 @@ if __name__ == "__main__":
                 if frequency != 5:
                     if recvCount == 0.0:
                         freqData.append((frequency, 0.0))
-                        print "frequency was: %d and the succRate was 0", % (frequency)
+                        print "frequency was: %d and the succRate was 0" % (frequency)
                     else:
                         freqData.append((frequency, succCount / recvCount))
                         print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
