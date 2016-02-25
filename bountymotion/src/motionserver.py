@@ -91,8 +91,8 @@ if __name__ == "__main__":
         frequency = 5
         endFreq = 60
         startTime = 0
-        succCount = 0 # this is the total number of times sent succ message
-        recvCount = 0 # this is the total number of times recv vel messages
+        succCount = 0.0 # this is the total number of times sent succ message
+        recvCount = 0.0 # this is the total number of times recv vel messages
         freqData = []
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
@@ -103,10 +103,14 @@ if __name__ == "__main__":
             if curtime - startTime >= 120.0:
                 startTime = curtime
                 if frequency != 5:
-                    freqData.append((frequency, succCount / recvCount))
-                    print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
-                succCount = 0 # reset
-                recvCount = 0 # reset
+                    if recvCount == 0.0:
+                        freqData.append((frequency, 0.0))
+                        print "frequency was: %d and the succRate was 0", % (frequency)
+                    else:
+                        freqData.append((frequency, succCount / recvCount))
+                        print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
+                succCount = 0.0 # reset
+                recvCount = 0.0 # reset
                 frequency += 5
 
             recvData = udpCon.recv(0.3)
