@@ -101,7 +101,7 @@ if __name__ == "__main__":
                 count = 0
             count += 1
 
-            recvData = udpCon.recv(0.3)
+            recvData = udpCon.recv(0.05)
             curtime = time.time() # don't want to count the wasted time of the recv...
 
             if curtime - startTime >= interval:
