@@ -120,7 +120,9 @@ if __name__ == "__main__":
 
 
             data_ar, addr, tempHZRecv = decideWinner(recvData)
-            hzRecv = hzRecv or tempHZRecv
+            if hzRecv == False and tempHZRecv == True:
+                hzRecv = tempHZRecv
+                print 'am on next hertz'
 
             if addr != None:
 
