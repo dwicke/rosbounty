@@ -34,7 +34,7 @@ class bondsman:
         self.subscriber = rospy.Subscriber("/bountybondsman/success",
             success, self.successCallback,  queue_size = 1)
 
-        rospy.Timer(rospy.Duration(10), self.taskResend)
+        rospy.Timer(rospy.Duration(100), self.taskResend)
         if VERBOSE :
             print "subscribed to /bountybondsman/task"
 
@@ -44,6 +44,7 @@ class bondsman:
         print 'Sending the task messages again!'
         for task in self.taskMsg.keys():
             for bountyHunter in self.taskList[task].bountyHunters:
+                print json.dumps(self.taskMsg[task])
                 self.sock.sendto(json.dumps(self.taskMsg[task]), (bountyHunter, PORT))
         print 'finished sending'
 
