@@ -123,6 +123,7 @@ if __name__ == "__main__":
                 forward = float(data_ar[0])
                 ang = float(data_ar[1])
                 totalTime = curtime - recvTS
+                print 'CurTime = %f and recvTS = %f and totalTime = %f' % (curtime, recvTS, totalTime)
 
                 if recvID > preID:
                     # do motion stuff
@@ -131,10 +132,6 @@ if __name__ == "__main__":
                         robot_vel(forward, ang)
                         curFor = forward
                         curAng = ang
-
-
-                    if startTime == 0:
-                        startTime = curtime
 
                     preID = recvID
                     recvCount += 1 # i got something that i maybe can use
