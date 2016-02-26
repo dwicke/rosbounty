@@ -94,6 +94,7 @@ if __name__ == "__main__":
         succCount = 0.0 # this is the total number of times sent succ message
         recvCount = 0.0 # this is the total number of times recv vel messages
         freqData = []
+        interval = 20.0
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
                 udpCon.send('HI I am udp motion message')
@@ -103,7 +104,7 @@ if __name__ == "__main__":
             recvData = udpCon.recv(0.3)
             curtime = time.time() # don't want to count the wasted time of the recv...
 
-            if curtime - startTime >= 120.0:
+            if curtime - startTime >= interval:
                 startTime = curtime
                 if frequency != 5:
                     if recvCount == 0.0:
@@ -115,6 +116,7 @@ if __name__ == "__main__":
                 succCount = 0.0 # reset
                 recvCount = 0.0 # reset
                 frequency += 5
+                print 'frequency = %d' % (frequency)
 
 
             data_ar, addr = decideWinner(recvData)
@@ -126,7 +128,7 @@ if __name__ == "__main__":
                 forward = float(data_ar[0])
                 ang = float(data_ar[1])
                 totalTime = curtime - recvTS
-                print 'CurTime = %f and recvTS = %f and totalTime = %f' % (curtime, recvTS, totalTime)
+                #print 'CurTime = %f and recvTS = %f and totalTime = %f' % (curtime, recvTS, totalTime)
 
                 if recvID > preID:
                     # do motion stuff
