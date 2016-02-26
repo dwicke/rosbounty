@@ -34,7 +34,7 @@ class bondsman:
         self.subscriber = rospy.Subscriber("/bountybondsman/success",
             success, self.successCallback,  queue_size = 1)
 
-        rospy.Timer(rospy.Duration(100), self.taskResend)
+        rospy.Timer(rospy.Duration(10), self.taskResend)
         if VERBOSE :
             print "subscribed to /bountybondsman/task"
 

@@ -111,8 +111,8 @@ class image_feature:
 
 def main(args):
     '''Initializes and cleanup ros node'''
-    rospy.init_node('bountycamera', anonymous=True)
     ic = image_feature()
+    rospy.init_node('bountycamera', anonymous=True)
     try:
         rospy.spin()
     except KeyboardInterrupt:
