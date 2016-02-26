@@ -100,6 +100,9 @@ if __name__ == "__main__":
                 count = 0
             count += 1
 
+            recvData = udpCon.recv(0.3)
+            curtime = rospy.get_time() # don't want to count the wasted time of the recv...
+
             if curtime - startTime >= 120.0:
                 startTime = curtime
                 if frequency != 5:
@@ -113,8 +116,7 @@ if __name__ == "__main__":
                 recvCount = 0.0 # reset
                 frequency += 5
 
-            recvData = udpCon.recv(0.3)
-            curtime = rospy.get_time() # don't want to count the wasted time of the recv...
+
             data_ar, addr = decideWinner(recvData)
             if addr != None:
 
