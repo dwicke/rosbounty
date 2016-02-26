@@ -139,11 +139,11 @@ if __name__ == "__main__":
                         curAng = ang
 
                     preID = recvID
-                    recvCount += 1 # i got something that i maybe can use
+                    recvCount += 1.0 # i got something that i maybe can use
                     # now send the success message as long as the totalTime is less than the threshold
                     if totalTime <= (1.0/frequency) and frequency <= endFreq:
                         # task, taskID, winnerIP, totalTime
-                        succCount += 1
+                        succCount += 1.0
                         sendSuccess(taskName, recvID, addr, totalTime, succCount, recvCount)
                     #else:
                         # condsider sending a success message with no one as the winner?...
