@@ -101,7 +101,7 @@ if __name__ == "__main__":
             count += 1
 
             recvData = udpCon.recv(0.3)
-            curtime = rospy.get_time() # don't want to count the wasted time of the recv...
+            curtime = time.time() # don't want to count the wasted time of the recv...
 
             if curtime - startTime >= 120.0:
                 startTime = curtime
