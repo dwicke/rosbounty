@@ -96,5 +96,5 @@ class ConnectionManager(object):
             elif self.connType == 'tcp' and self.isServer == True:
                 addr = self.addr
             recvData.append((data, addr))
-            print "received message: %s from %s:%d" % (data, addr[0], addr[1])
+            #print "received message: %s from %s:%d" % (data, addr[0], addr[1])
         return recvData
