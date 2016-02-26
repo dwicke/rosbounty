@@ -35,7 +35,6 @@ class image_feature:
         self.dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT),('45.55.11.33', INPORT), ('10.112.120.41', INPORT)]
         self.id = 0
         self.initBounty = 30
-        self.lastSuccess = time.time()
         # publish a task message
         # includes type/name (image blob) initial bounty, round trip deadline
         # publish reward message
@@ -76,7 +75,7 @@ class image_feature:
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
         # increase the bounty until get a success message and then reset it.
-        data = "%s,%s,%s" % (str(self.id), str(time.time()), reducedimg.tostring())
+        data = "%s,%s,%s" % (str(self.id), str(rospy.get_time()), reducedimg.tostring())
         #print "id sent: %s" % (str(self.id))
         self.id += 1
         #print len(zlib.compress(data, 9))
