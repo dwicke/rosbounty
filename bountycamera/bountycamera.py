@@ -110,8 +110,8 @@ class image_feature:
 
 def main(args):
     '''Initializes and cleanup ros node'''
-    ic = image_feature()
     rospy.init_node('bountycamera', anonymous=True)
+    ic = image_feature()
     ic.publishTask()
     try:
         rospy.spin()
