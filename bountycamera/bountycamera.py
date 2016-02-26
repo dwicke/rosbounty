@@ -41,7 +41,6 @@ class image_feature:
         # winner ip, total time, reward
         self.THRESHOLD = 10000
         self.taskPub = rospy.Publisher('/bountybondsman/task', task, queue_size=10)
-        self.publishTask()
 
         self.subscriber = rospy.Subscriber("/bountybondsman/success",
             success, self.successCallback,  queue_size = 1)
@@ -113,6 +112,7 @@ def main(args):
     '''Initializes and cleanup ros node'''
     ic = image_feature()
     rospy.init_node('bountycamera', anonymous=True)
+    ic.publishTask()
     try:
         rospy.spin()
     except KeyboardInterrupt:
