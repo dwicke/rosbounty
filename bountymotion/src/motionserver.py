@@ -133,7 +133,7 @@ if __name__ == "__main__":
                 if recvID > preID:
                     # do motion stuff
                     if curFor != forward or curAng != ang:
-                        print "forward: %d ang: %d from %s" % (forward, ang, addr)
+                        print "forward: %f ang: %f from %s total time %f desired time = %f" % (forward, ang, addr, totalTime, 1/frequency)
                         robot_vel(forward, ang)
                         curFor = forward
                         curAng = ang
