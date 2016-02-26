@@ -41,7 +41,10 @@ def decideWinner(recvData):
     maxID = -1
     curWinner = None
     winnerIP = None
+    hzRecv = False
     for datum in recvData:
+        if datum[0] == 'hzRecv':
+            hzRecv = True
         if datum[0] != 'connected':
             data_ar = datum[0].split(',')
             recvID = int(data_ar[2])
@@ -49,7 +52,7 @@ def decideWinner(recvData):
                 maxID = recvID
                 curWinner = data_ar
                 winnerIP = datum[1][0]
-    return curWinner, winnerIP
+    return curWinner, winnerIP, hzRecv
 
 def shutdown():
     # stop the robot
@@ -103,6 +106,7 @@ if __name__ == "__main__":
         recvCount = 0.0 # this is the total number of times recv vel messages
         freqData = []
         interval = 5.0
+        hzRecv = True
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
                 udpCon.send('HI I am udp motion message')
@@ -115,12 +119,15 @@ if __name__ == "__main__":
 
 
 
-            data_ar, addr = decideWinner(recvData)
+            data_ar, addr, tempHZRecv = decideWinner(recvData)
+            hzRecv = hzRecv or tempHZRecv
+
             if addr != None:
 
                 if curtime - startTime >= interval:
                     startTime = curtime
                     if frequency != 5:
+                        hzRecv = False
                         if recvCount == 0.0:
                             freqData.append((frequency, 0.0))
                             print "frequency was: %d and the succRate was 0" % (frequency)
@@ -141,7 +148,7 @@ if __name__ == "__main__":
                 totalTime = curtime - recvTS
                 #print 'CurTime = %f and recvTS = %f and totalTime = %f' % (curtime, recvTS, totalTime)
 
-                if recvID > preID:
+                if recvID > preID and hzRecv == True:
                     # do motion stuff
                     if curFor != forward or curAng != ang:
                         print "forward: %f ang: %f from %s total time %f desired time = %f" % (forward, ang, addr, totalTime, 1.0/frequency)
