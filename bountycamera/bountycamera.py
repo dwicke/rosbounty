@@ -32,7 +32,7 @@ class image_feature:
         '''Initialize ros subscriber'''
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # this list should be in ros...
-        self.dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT), ("159.203.67.159", INPORT), ("45.55.143.53", INPORT), ("45.55.143.47", INPORT), ("159.203.47.107", INPORT), (INPORT, "159.203.47.108"), ("159.203.47.109", INPORT), ("159.203.47.110", INPORT)]
+        self.dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT), ('159.203.67.159', INPORT), ('45.55.143.53', INPORT), ('45.55.143.47', INPORT), ('159.203.47.107', INPORT), (INPORT, '159.203.47.108'), ('159.203.47.109', INPORT), ('159.203.47.110', INPORT)]
         self.id = 0
         self.initBounty = 30
         # publish a task message
