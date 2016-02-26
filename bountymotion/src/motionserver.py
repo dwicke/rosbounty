@@ -98,7 +98,7 @@ if __name__ == "__main__":
         count = 0
         frequency = 5
         endFreq = 20
-        startTime = 0
+        startTime = 0.0
         succCount = 0.0 # this is the total number of times sent succ message
         recvCount = 0.0 # this is the total number of times recv vel messages
         freqData = []
@@ -110,25 +110,28 @@ if __name__ == "__main__":
             count += 1
 
             recvData = udpCon.recv(0.05)
-            curtime = time.time() # don't want to count the wasted time of the recv...
+            curtime = time.time()
 
-            if curtime - startTime >= interval:
-                startTime = curtime
-                if frequency != 5:
-                    if recvCount == 0.0:
-                        freqData.append((frequency, 0.0))
-                        print "frequency was: %d and the succRate was 0" % (frequency)
-                    else:
-                        freqData.append((frequency, succCount / recvCount))
-                        print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
-                succCount = 0.0 # reset
-                recvCount = 0.0 # reset
-                frequency += 5
-                print 'frequency = %d' % (frequency)
+
 
 
             data_ar, addr = decideWinner(recvData)
             if addr != None:
+
+                if curtime - startTime >= interval:
+                    startTime = curtime
+                    if frequency != 5:
+                        if recvCount == 0.0:
+                            freqData.append((frequency, 0.0))
+                            print "frequency was: %d and the succRate was 0" % (frequency)
+                        else:
+                            freqData.append((frequency, succCount / recvCount))
+                            print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
+                    succCount = 0.0 # reset
+                    recvCount = 0.0 # reset
+                    frequency += 5
+                    print 'frequency = %d' % (frequency)
+
 
                 recvID = int(data_ar[2])
                 recvTS = float(data_ar[3])
