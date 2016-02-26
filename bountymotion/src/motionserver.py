@@ -99,7 +99,7 @@ if __name__ == "__main__":
                 udpCon.send('HI I am udp motion message')
                 count = 0
             count += 1
-            curtime = rospy.get_time() # don't want to count the wasted time of the recv...
+
             if curtime - startTime >= 120.0:
                 startTime = curtime
                 if frequency != 5:
@@ -114,6 +114,7 @@ if __name__ == "__main__":
                 frequency += 5
 
             recvData = udpCon.recv(0.3)
+            curtime = rospy.get_time() # don't want to count the wasted time of the recv...
             data_ar, addr = decideWinner(recvData)
             if addr != None:
 
