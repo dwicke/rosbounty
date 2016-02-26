@@ -76,10 +76,18 @@ if __name__ == "__main__":
 
 
         udpCon = ConnectionManager('udp')
-        udpCon.addClient('104.131.172.175', port)
         udpCon.addClient('10.112.120.247', port)
-        udpCon.addClient('45.55.11.33', port)
-        udpCon.addClient('10.112.120.41', port)
+        # NY
+        udpCon.addClient('104.131.172.175', port)
+        udpCon.addClient('159.203.67.159', port)
+        udpCon.addClient('45.55.143.47', port)
+        udpCon.addClient('45.55.143.53', port)
+        # TOR
+        udpCon.addClient('159.203.47.110', port)
+        udpCon.addClient('159.203.47.109', port)
+        udpCon.addClient('159.203.47.108', port)
+        udpCon.addClient('159.203.47.107', port)
+
         udpCon.send('HI I am udp motion message')
         while len(udpCon.recv(1)) == 0:
             udpCon.send('HI I am udp motion message')
