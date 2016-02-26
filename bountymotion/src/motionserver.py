@@ -43,8 +43,6 @@ def decideWinner(recvData):
     winnerIP = None
     hzRecv = False
     for datum in recvData:
-        if datum[0] == 'hzRecv':
-            hzRecv = True
         if datum[0] != 'connected':
             data_ar = datum[0].split(',')
             recvID = int(data_ar[2])
@@ -52,6 +50,7 @@ def decideWinner(recvData):
                 maxID = recvID
                 curWinner = data_ar
                 winnerIP = datum[1][0]
+
     return curWinner, winnerIP, hzRecv
 
 def shutdown():
@@ -119,10 +118,8 @@ if __name__ == "__main__":
 
 
 
-            data_ar, addr, tempHZRecv = decideWinner(recvData)
-            if hzRecv == False and tempHZRecv == True:
-                hzRecv = tempHZRecv
-                print 'am on next hertz'
+            data_ar, addr = decideWinner(recvData)
+
 
             if addr != None:
 
@@ -150,7 +147,7 @@ if __name__ == "__main__":
                 totalTime = curtime - recvTS
                 #print 'CurTime = %f and recvTS = %f and totalTime = %f' % (curtime, recvTS, totalTime)
 
-                if recvID > preID and hzRecv == True:
+                if recvID > preID:
                     # do motion stuff
                     if curFor != forward or curAng != ang:
                         print "forward: %f ang: %f from %s total time %f desired time = %f" % (forward, ang, addr, totalTime, 1.0/frequency)
