@@ -133,7 +133,7 @@ if __name__ == "__main__":
                 if recvID > preID:
                     # do motion stuff
                     if curFor != forward or curAng != ang:
-                        print "forward: %f ang: %f from %s total time %f desired time = %f" % (forward, ang, addr, totalTime, 1/frequency)
+                        print "forward: %f ang: %f from %s total time %f desired time = %f" % (forward, ang, addr, totalTime, 1.0/frequency)
                         robot_vel(forward, ang)
                         curFor = forward
                         curAng = ang
@@ -141,7 +141,7 @@ if __name__ == "__main__":
                     preID = recvID
                     recvCount += 1 # i got something that i maybe can use
                     # now send the success message as long as the totalTime is less than the threshold
-                    if totalTime <= (1/frequency) and frequency <= endFreq:
+                    if totalTime <= (1.0/frequency) and frequency <= endFreq:
                         # task, taskID, winnerIP, totalTime
                         succCount += 1
                         sendSuccess(taskName, recvID, addr, totalTime, succCount, recvCount)
