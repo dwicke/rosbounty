@@ -89,7 +89,7 @@ if __name__ == "__main__":
         preID = -1
         count = 0
         frequency = 5
-        endFreq = 60
+        endFreq = 20
         startTime = 0
         succCount = 0.0 # this is the total number of times sent succ message
         recvCount = 0.0 # this is the total number of times recv vel messages
@@ -149,9 +149,9 @@ if __name__ == "__main__":
                         # condsider sending a success message with no one as the winner?...
         # end while
         # write out the data
-        sendSuccess('', -1, '', 0, 0, 0)
+        sendSuccess('visualServoing', -1, '', 0, 0, 0) # should be more general...
 
-        file = open("freqData.dat","wb")
+        file = open("/home/pi/freqData.dat","wb")
         for item in freqData:
             file.write("%f, %f\n" % (item[0], item[1]))
         file.close()
