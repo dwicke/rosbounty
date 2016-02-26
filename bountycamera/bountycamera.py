@@ -50,7 +50,7 @@ class image_feature:
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/camera/image_raw",
             Image, self.callback,  queue_size = 1)
-
+        print 'Finished creating the image_features'
         ## need to then subscribe to
         if VERBOSE :
             print "subscribed to /camera/image/compressed"
@@ -105,7 +105,7 @@ class image_feature:
         msg.deadline = 30
         msg.inputPort = INPORT
         msg.outputPort = OUTPORT
-
+        print 'publishing the task'
         self.taskPub.publish(msg)
 
 
