@@ -1,5 +1,5 @@
 string task
-uint32 taskID
+int32 taskID
 string winnerIP
 float64 totalTime
 uint32 succCount

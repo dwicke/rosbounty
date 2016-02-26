@@ -94,7 +94,7 @@ if __name__ == "__main__":
         succCount = 0.0 # this is the total number of times sent succ message
         recvCount = 0.0 # this is the total number of times recv vel messages
         freqData = []
-        interval = 20.0
+        interval = 5.0
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
                 udpCon.send('HI I am udp motion message')
