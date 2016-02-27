@@ -118,7 +118,7 @@ if __name__ == "__main__":
                 count = 0
             count += 1
 
-            recvData = udpCon.recv(0.05)
+            recvData = udpCon.recv(0.005)
             curtime = time.time()
 
 
