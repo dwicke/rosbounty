@@ -91,6 +91,9 @@ if __name__ == "__main__":
         udpCon.addClient('159.203.47.108', port)
         udpCon.addClient('159.203.47.107', port)
 
+        udpCon.addClient('129.174.121.166', port)
+
+
         udpCon.send('HI I am udp motion message')
         while len(udpCon.recv(1)) == 0:
             udpCon.send('HI I am udp motion message')
