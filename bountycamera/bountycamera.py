@@ -74,6 +74,7 @@ class image_feature:
         ORANGE_MIN = np.array([5, 50, 50],np.uint8)
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
+
         # increase the bounty until get a success message and then reset it.
         data = "%s,%s,%s" % (str(self.id), str(time.time()), reducedimg.tostring())
         #print "id sent: %s" % (str(self.id))
@@ -83,7 +84,8 @@ class image_feature:
 
     def distributeData(self, data):
         for datacenter in self.dataCenters:
-            self.sock.sendto(zlib.compress(data, 9), datacenter)
+            self.sock.sendto(data, datacenter)
+            #self.sock.sendto(zlib.compress(data, 9), datacenter)
 
     def publishTask(self):
         ''' task message is published

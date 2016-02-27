@@ -63,16 +63,16 @@ class ConnectionManager(object):
             ## THIS IS NOT POSSIBLE IF YOU ARE A UDP SERVER you can't send
             ## make it a client then you can send.
             tempSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            print 'Sending %s to %s :%d' %(data, ip, port)
+            #print 'Sending %s to %s :%d' %(data, ip, port)
             tempSock.sendto(data, (ip, port))
         elif self.isServer == False and self.connType == 'tcp':
             _,ready_socks,_ = select.select([], self.clientsock, [])
             for sock in ready_socks:
                 sock.sendall(data) # This is will not block
-                print "sent message:", data
+                #print "sent message:", data
         elif self.isServer == False and self.connType == 'udp':
             for sock in self.clientsock:
-                print 'Sending %s to %s :%d' %(data, self.clientIPPort[sock][0], self.clientIPPort[sock][1])
+                #print 'Sending %s to %s :%d' %(data, self.clientIPPort[sock][0], self.clientIPPort[sock][1])
                 sock.sendto(data, self.clientIPPort[sock])
         return True
 
