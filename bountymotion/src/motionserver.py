@@ -6,6 +6,7 @@ import time
 from geometry_msgs.msg import Twist
 from bountybondsman.msg import success
 from ConnectionManager import ConnectionManager
+from DataCollector import DataCollector
 
 
 def robot_vel(forward, angular):
@@ -99,12 +100,14 @@ if __name__ == "__main__":
         preID = -1
         count = 0
         frequency = 5
-        endFreq = 20
+        endFreq = 60
         startTime = 0.0
         succCount = 0.0 # this is the total number of times sent succ message
         recvCount = 0.0 # this is the total number of times recv vel messages
         freqData = []
-        interval = 5.0
+        freqTS = DataCollector()
+        curTS = ''
+        interval = 5000.0
         hzRecv = True
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
@@ -136,6 +139,7 @@ if __name__ == "__main__":
                     succCount = 0.0 # reset
                     recvCount = 0.0 # reset
                     frequency += 5
+                    curTS = 'tsData_' + str(frequency)
                     print 'frequency = %d' % (frequency)
 
 
@@ -162,13 +166,17 @@ if __name__ == "__main__":
                         # task, taskID, winnerIP, totalTime
                         succCount += 1.0
                         sendSuccess(taskName, recvID, addr, totalTime, succCount, recvCount)
+
+                    freqTS.addPoint(curTS, (recvTS, succCount / recvCount))
+
                     #else:
                         # condsider sending a success message with no one as the winner?...
         # end while
         # write out the data
         sendSuccess('visualServoing', -1, '', 0, 0, 0) # should be more general...
+        freqTS.writeData()
 
-        file = open("/home/pi/freqData.dat","wb")
+        file = open("/home/pi/freqData.dat","w")
         for item in freqData:
             file.write("%f, %f\n" % (item[0], item[1]))
         file.close()
