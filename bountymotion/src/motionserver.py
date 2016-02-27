@@ -52,7 +52,7 @@ def decideWinner(recvData):
                 curWinner = data_ar
                 winnerIP = datum[1][0]
 
-    return curWinner, winnerIP, hzRecv
+    return curWinner, winnerIP
 
 def shutdown():
     # stop the robot
