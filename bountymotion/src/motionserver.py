@@ -69,7 +69,7 @@ if __name__ == "__main__":
     pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
     global successPub
     successPub = rospy.Publisher('/bountybondsman/success', success, queue_size=10)
-    #rate = rospy.Rate(10) # 10hz
+    rate = rospy.Rate(40) # 10hz
 
 
     rospy.on_shutdown(shutdown)
