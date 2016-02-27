@@ -168,9 +168,9 @@ if __name__ == "__main__":
                     if totalTime <= (1.0/frequency) and frequency <= endFreq:
                         # task, taskID, winnerIP, totalTime
                         succCount += 1.0
-                        sendSuccess(taskName, recvID, addr, totalTime, succCount, recvCount)
+                        #sendSuccess(taskName, recvID, addr, totalTime, succCount, recvCount)
 
-                    freqTS.addPoint(curTS, (recvTS, succCount / recvCount))
+                    #freqTS.addPoint(curTS, (recvTS, succCount / recvCount))
 
                     #else:
                         # condsider sending a success message with no one as the winner?...
