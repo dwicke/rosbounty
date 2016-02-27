@@ -116,8 +116,8 @@ if __name__ == "__main__":
         curAng = 0.0
         preID = -1
         count = 0
-        frequency = 40
-        endFreq = 75
+        frequency = 5
+        endFreq = 45
         startTime = 0.0
         succCount = 0.0 # this is the total number of times sent succ message
         recvCount = 0.0 # this is the total number of times recv vel messages
