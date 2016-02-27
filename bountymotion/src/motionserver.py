@@ -3,6 +3,7 @@
 import socket
 import rospy
 import time
+import json
 from geometry_msgs.msg import Twist
 from bountybondsman.msg import success
 from ConnectionManager import ConnectionManager
@@ -20,7 +21,7 @@ def robot_vel(forward, angular):
     pub.publish(twist)
 
 
-def sendSuccess(task, taskID, winnerIP, totalTime, succCount, recvCount):
+def oldsendSuccess(task, taskID, winnerIP, totalTime, succCount, recvCount):
     '''
     string task
     uint32 taskID
@@ -35,6 +36,18 @@ def sendSuccess(task, taskID, winnerIP, totalTime, succCount, recvCount):
     msg.succCount = succCount
     msg.recvCount = recvCount
     successPub.publish(msg)
+
+
+def sendSuccess(task, taskID, winnerIP, totalTime, succCount, recvCount):
+    '''
+    string task
+    uint32 taskID
+    string winnerIP
+    float64 totalTime
+    '''
+
+    msgdata = ['success', task, taskID, winnerIP, totalTime, succCount, recvCount]
+    udpCon.send(json.dumps(msgdata))
 
 
 
@@ -78,6 +91,7 @@ if __name__ == "__main__":
         port = 15000
 
 
+        global udpCon
         udpCon = ConnectionManager('udp')
         udpCon.addClient('10.112.120.247', port)
         # NY
@@ -102,8 +116,8 @@ if __name__ == "__main__":
         curAng = 0.0
         preID = -1
         count = 0
-        frequency = 5
-        endFreq = 100
+        frequency = 40
+        endFreq = 75
         startTime = 0.0
         succCount = 0.0 # this is the total number of times sent succ message
         recvCount = 0.0 # this is the total number of times recv vel messages
@@ -171,7 +185,7 @@ if __name__ == "__main__":
                         succCount += 1.0
                         #if succCount % 1000 == 0:
                             #print 'Sent success'
-                            #sendSuccess(taskName, recvID, addr, totalTime, succCount, recvCount)
+                        sendSuccess(taskName, recvID, addr, totalTime, succCount, recvCount)
 
                     freqTS.addPoint(curTS, (recvTS, succCount / recvCount))
 
