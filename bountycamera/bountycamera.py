@@ -84,8 +84,7 @@ class image_feature:
 
     def distributeData(self, data):
         for datacenter in self.dataCenters:
-            self.sock.sendto(data, datacenter)
-            #self.sock.sendto(zlib.compress(data, 9), datacenter)
+            self.sock.sendto(zlib.compress(data, 9), datacenter)
 
     def publishTask(self):
         ''' task message is published
