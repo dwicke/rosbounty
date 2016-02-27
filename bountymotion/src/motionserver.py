@@ -111,7 +111,7 @@ if __name__ == "__main__":
         hzRecv = True
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
-                udpCon.send('HI I am udp motion message')
+                #udpCon.send('HI I am udp motion message')
                 count = 0
             count += 1
 
