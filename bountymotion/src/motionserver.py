@@ -103,7 +103,7 @@ if __name__ == "__main__":
         preID = -1
         count = 0
         frequency = 5
-        endFreq = 35
+        endFreq = 100
         startTime = 0.0
         succCount = 0.0 # this is the total number of times sent succ message
         recvCount = 0.0 # this is the total number of times recv vel messages
@@ -156,7 +156,7 @@ if __name__ == "__main__":
                 if recvID > preID:
 
                     #print "recvID = %d %f - %f = %f" %(recvID, curtime, recvTS, totalTime)
-                    #print "recvID = %d forward: %f ang: %f from %s total time %f desired time = %f" % (recvID, forward, ang, addr, totalTime, 1.0/frequency)
+                    print "recvID = %d forward: %f ang: %f from %s total time %f desired time = %f" % (recvID, forward, ang, addr, totalTime, 1.0/frequency)
                     # do motion stuff
                     if curFor != forward or curAng != ang:
                         robot_vel(forward, ang)
