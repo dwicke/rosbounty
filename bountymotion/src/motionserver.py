@@ -154,7 +154,7 @@ if __name__ == "__main__":
                             print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
                     succCount = 0.0 # reset
                     recvCount = 0.0 # reset
-                    frequency += 2.0
+                    frequency += 5.0
                     curTS = 'tsData_' + str(frequency)
                     print 'frequency = %d' % (frequency)
 
