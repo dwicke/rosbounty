@@ -116,15 +116,15 @@ if __name__ == "__main__":
         curAng = 0.0
         preID = -1
         count = 0
-        frequency = 30
-        endFreq = 75
+        frequency = 5
+        endFreq = 30
         startTime = 0.0
         succCount = 0.0 # this is the total number of times sent succ message
         recvCount = 0.0 # this is the total number of times recv vel messages
         freqData = []
         freqTS = DataCollector()
         curTS = ''
-        interval = 30.0
+        interval = 15.0
         hzRecv = True
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
