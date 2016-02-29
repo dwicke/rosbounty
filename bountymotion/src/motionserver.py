@@ -116,8 +116,8 @@ if __name__ == "__main__":
         curAng = 0.0
         preID = -1
         count = 0
-        frequency = 5
-        endFreq = 30
+        frequency = 30
+        endFreq = 75
         startTime = 0.0
         succCount = 0.0 # this is the total number of times sent succ message
         recvCount = 0.0 # this is the total number of times recv vel messages
@@ -154,7 +154,7 @@ if __name__ == "__main__":
                             print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
                     succCount = 0.0 # reset
                     recvCount = 0.0 # reset
-                    frequency += 5.0
+                    frequency += 2.0
                     curTS = 'tsData_' + str(frequency)
                     print 'frequency = %d' % (frequency)
 
