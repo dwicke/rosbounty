@@ -124,7 +124,7 @@ if __name__ == "__main__":
         freqData = []
         freqTS = DataCollector()
         curTS = ''
-        interval = 15.0
+        interval = 30.0
         hzRecv = True
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
