@@ -20,7 +20,7 @@ class DataCollector(object):
             thefile = open( "/tmp/" + k + ".dat", "w" )
             for item in self.collectedData[k]:
 
-                thefile.write("%d,%f\n" % (item[0], item[1]))
+                thefile.write("%f,%f,%s\n" % (item[0], item[1], item[2]))
             thefile.close()
     def deleteSet(setName):
         del self.collectedData[setName]

@@ -187,7 +187,7 @@ if __name__ == "__main__":
                             #print 'Sent success'
                         sendSuccess(taskName, recvID, addr, totalTime, succCount, recvCount)
 
-                        freqTS.addPoint(curTS, (recvTS, str(succCount / recvCount) + " " + addr)
+                        freqTS.addPoint(curTS, (recvTS, succCount / recvCount, addr))
 
                     #else:
                         # condsider sending a success message with no one as the winner?...
