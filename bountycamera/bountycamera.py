@@ -34,7 +34,7 @@ OUTPORT = 15000
 # Ach files
 class cloud(Structure):
     _pack_ = 1
-    _fields_ = [("image"  , c_ubyte*320*240*3)]
+    _fields_ = [("image"  , c_char*430400)]
 
 
 class image_feature:
@@ -59,7 +59,7 @@ class image_feature:
             success, self.successCallback,  queue_size = 1)
 
 
-        self.s = ach.Channel('image_chan')
+        self.s = ach.Channel('image_chan', 5, 430400)
         self.state = cloud()
 
         # subscribed Topic
@@ -81,10 +81,10 @@ class image_feature:
         '''Callback function of subscribed topic. 
         Here images get converted and features detected'''
            
-        self.image = bytearray(ros_data.data)
-      
-        self.state.image = self.image
-        self.s.put(state)
+        self.image = bytearray(b'hi')
+        self.state = cast(create_string_buffer(bytes(self.image)), POINTER(cloud)).contents
+        #self.state.image = self.image
+        self.s.put(self.state)
         
     def publishTask(self):
         ''' task message is published

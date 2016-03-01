@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
+from multiprocessing import Process, Manager
 from geometry_msgs.msg import Twist
 from bountybondsman.msg import success
 from ConnectionManager import ConnectionManager
@@ -51,7 +52,7 @@ def robot_vel(forward, angular):
 # Ach files
 class cloud(Structure):
 	_pack_ = 1
-	_fields_ = [("image"  , c_ubyte*320*240*3)]
+	_fields_ = [("image"  , c_char*230400)]
 
 
 
@@ -59,7 +60,7 @@ def shutdown():
 	# stop the robot
 	robot_vel(0,0)
 
-if __name__ == "__main__":
+def controlLoop(sharedImage):
 
 	rospy.init_node('motionserver', anonymous=True)
 	global pub
@@ -97,7 +98,7 @@ if __name__ == "__main__":
 	print 'Recv response'
 
 
-	s = ach.Channel('image_chan')
+	s = ach.Channel('image_chan', 5, 230)
 	state = cloud()
 
 	preID = 0
@@ -109,7 +110,9 @@ if __name__ == "__main__":
 
 	f = 5.0
 	T = 1.0 / f
-
+	HEIGHT = 240
+	WIDTH = 320
+	CHANNELS = 3
 
 
 	for i in range(1,15):
@@ -123,9 +126,9 @@ if __name__ == "__main__":
 
 		tick = time.time()
 		[statuss, framesizes] = s.get(state, wait=False, last=True)
-
+		print str(state.image)
 		# process the image
-		image = np.array(state.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
+
 		hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
 		ORANGE_MIN = np.array([5, 50, 50],np.uint8)
 		ORANGE_MAX = np.array([15, 255, 255],np.uint8)
@@ -162,4 +165,73 @@ if __name__ == "__main__":
 
 
 
+
+
+class image_feature(object):
+
+	def __init__(self, sh_image):
+		'''Initialize ros subscriber'''
+
+		self.sh_image = sh_image
+
+		## setup the publisher
+		self.taskPub = rospy.Publisher('/bountybondsman/task', task, queue_size=10)
+
+		# subscribed Topic
+		self.subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
+		print 'Finished creating the image_features'
+
+	def callback(self, ros_data):
+		'''Callback function of subscribed topic.
+		Here images get put into the shared memory'''
+
+		self.image = bytearray(ros_data.image)
+		image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
+
+		#self.state.image = self.image
+		self.s.put(self.state)
+
+	def publishTask(self):
+		''' task message is published
+			string taskName
+			string[] bountyHunters
+			float64 initialBounty
+			float64 bountyRate
+			float64 deadline
+			uint32 inputPort
+			uint32 outputPort
+		'''
+		msg = task()
+		msg.taskName = "visualServoing"
+		# me, nyc, sfo
+		msg.bountyHunters = ["10.112.120.247", "104.131.172.175", "159.203.67.159", "45.55.143.53", "45.55.143.47", "159.203.47.107", "159.203.47.108", "159.203.47.109", "159.203.47.110", "129.174.121.166"]
+		msg.initialBounty = self.initBounty
+		msg.bountyRate = 1
+		msg.deadline = 30
+		msg.inputPort = INPORT
+		msg.outputPort = OUTPORT
+		print 'publishing the task'
+		self.taskPub.publish(msg)
+
+
+
+def main(args):
+	'''Initializes and cleanup ros node'''
+	ic = image_feature()
+	rospy.init_node('bountycamera', anonymous=True)
+	ic.publishTask()
+	# start the child process
+	manager = Manager()
+	l = manager.list(1)
+	p = Process(target=controlLoop, args=(l))
+    p.start()
+
+
+	try:
+		rospy.spin()
+	except KeyboardInterrupt:
+		print "Shutting down ROS Image feature detector module"
+
+if __name__ == '__main__':
+	main(sys.argv)
 
