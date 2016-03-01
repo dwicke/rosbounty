@@ -19,6 +19,7 @@ def handler(signum, frame):
     # global T
     t = time.time()
     dt = t - globalTimestampLatest
+    print " time = %f globalTSL = %f dt = %f succInc = %f totalInc = %f" % (t, globalTimestampLatest, dt, succIncrementer, totalIncrementer)
     if dt < T:
         succIncrementer += 1
     totalIncrementer += 1
