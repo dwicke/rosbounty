@@ -153,6 +153,7 @@ if __name__ == "__main__":
         hzRecv = True
         lastID = -1
         switchFreqID = 1
+        signal.setitimer(signal.ITIMER_REAL, 0.5, 0.5)
         signal.signal(signal.SIGALRM, handler)
 
 
