@@ -12,7 +12,7 @@ from DataCollector import DataCollector
 
 
 def handler(signum, frame):
-    print "I am in the handler!!!!!!!!!!!"
+    #print "I am in the handler!!!!!!!!!!!"
     global succIncrementer
     global totalIncrementer
     global globalTimestampLatest

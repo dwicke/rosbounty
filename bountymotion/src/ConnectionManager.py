@@ -92,7 +92,7 @@ class ConnectionManager(object):
         try:
             ready_socks,_,_ = select.select(ssock, [], [], timeout)
         except select.error  as ex:
-            print ex
+            #print ex
             return None
 
         for sock in ready_socks:
