@@ -4,7 +4,7 @@ import socket
 import rospy
 import time
 import json
-import signal
+import signal, os
 from geometry_msgs.msg import Twist
 from bountybondsman.msg import success
 from ConnectionManager import ConnectionManager
