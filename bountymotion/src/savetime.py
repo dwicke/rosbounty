@@ -65,5 +65,6 @@ while True:
     dt = T - (tock - tick)
     if dt > 0.0:
         globalTimestampLatest = state.data
-        saveT()
-        time.sleep(dt)
+        print "state = ",state.data," tick = ", tick
+#        saveT()
+    time.sleep(dt)
