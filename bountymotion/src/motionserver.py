@@ -248,6 +248,7 @@ if __name__ == "__main__":
                     globalTimestampLatest = recvTS
                     state.data = recvTS
                     s.put(state)
+                    print 'put new state.data', recvTS
                     preID = recvID
                     recvCount += 1.0 # i got something that i maybe can use
                     # now send the success message as long as the totalTime is less than the threshold
