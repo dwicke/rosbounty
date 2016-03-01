@@ -42,7 +42,7 @@ while True:
     tick = time.time()
     data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
 
-    tock = time.tock()
+    tock = time.time()
     dt = T - (tock - tick)
     if dt > 0.0:
         globalTimestampLatest = float(data)
