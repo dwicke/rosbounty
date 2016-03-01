@@ -153,7 +153,7 @@ if __name__ == "__main__":
         hzRecv = True
         lastID = -1
         switchFreqID = 1
-        signal.setitimer(signal.ITIMER_REAL, 0.5, 0.5)
+        #signal.setitimer(signal.ITIMER_REAL, 0.5, 0.5)
         signal.signal(signal.SIGALRM, handler)
 
 
@@ -199,7 +199,7 @@ if __name__ == "__main__":
                     totalIncrementer = 0
                     succIncrementer = 0
                     T = 1.0 / float(frequency)
-                    signal.setitimer(signal.ITIMER_REAL, 0.5, T)
+                    signal.setitimer(signal.ITIMER_PRO, 0.5, T)
 
                     curTS = 'tsData_' + str(frequency)
                     print 'frequency = %d' % (frequency)
