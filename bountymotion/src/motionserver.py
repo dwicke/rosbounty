@@ -154,7 +154,7 @@ if __name__ == "__main__":
         lastID = -1
         switchFreqID = 1
         #signal.setitimer(signal.ITIMER_REAL, 0.5, 0.5)
-        signal.signal(signal.SIGALRM, handler)
+        signal.signal(signal.SIGVTALRM, handler)
 
 
 
