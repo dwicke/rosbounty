@@ -126,6 +126,7 @@ if __name__ == "__main__":
         curTS = ''
         interval = 30.0
         hzRecv = True
+        lastID = -1
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
                 #udpCon.send('HI I am udp motion message')
@@ -150,8 +151,9 @@ if __name__ == "__main__":
                             freqData.append((frequency, 0.0))
                             print "frequency was: %d and the succRate was 0" % (frequency)
                         else:
-                            freqData.append((frequency, succCount / recvCount))
-                            print "frequency was: %d and the succRate was %f" % (frequency, succCount / recvCount)
+                            freqData.append((frequency, succCount / lastID))
+                            print "frequency was: %d and the succRate was %f" % (frequency, succCount / lastID)
+                            lastID = -1
                     succCount = 0.0 # reset
                     recvCount = 0.0 # reset
                     frequency += 2.0
@@ -166,7 +168,7 @@ if __name__ == "__main__":
                 ang = float(data_ar[1])
                 totalTime = curtime - recvTS
                 #print 'CurTime = %f and recvTS = %f and totalTime = %f' % (curtime, recvTS, totalTime)
-
+                lastID = recvID
                 if recvID > preID:
 
                     #print "recvID = %d %f - %f = %f" %(recvID, curtime, recvTS, totalTime)
@@ -187,7 +189,7 @@ if __name__ == "__main__":
                             #print 'Sent success'
                         sendSuccess(taskName, recvID, addr, totalTime, succCount, recvCount)
 
-                    freqTS.addPoint(curTS, (recvTS, succCount / recvCount))
+                    freqTS.addPoint(curTS, (recvTS, succCount / recvID))
 
                     #else:
                         # condsider sending a success message with no one as the winner?...
