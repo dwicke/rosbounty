@@ -73,6 +73,8 @@ def decideWinner(recvData):
     curWinner = None
     winnerIP = None
     hzRecv = False
+    if recvData == None:
+        return curWinner, winnerIP
     for datum in recvData:
         if datum[0] != 'connected':
             data_ar = datum[0].split(',')

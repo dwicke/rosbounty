@@ -88,7 +88,13 @@ class ConnectionManager(object):
 
         if self.isServer == True:
             ssock = [self.server_socket]
-        ready_socks,_,_ = select.select(ssock, [], [], timeout)
+
+        try:
+            ready_socks,_,_ = select.select(ssock, [], [], timeout)
+        except select.error  as ex:
+            print ex
+            return None
+
         for sock in ready_socks:
             data, addr = sock.recvfrom(4096) # This is will not block
             if self.connType == 'tcp' and self.isServer == False:
