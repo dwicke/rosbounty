@@ -13,10 +13,10 @@ from DataCollector import DataCollector
 
 def handler(signum, frame):
     #print "I am in the handler!!!!!!!!!!!"
-    global succIncrementer
-    global totalIncrementer
-    global globalTimestampLatest
-    global T
+    # global succIncrementer
+    # global totalIncrementer
+    # global globalTimestampLatest
+    # global T
     t = time.time()
     dt = t - globalTimestampLatest
     if dt < T:
