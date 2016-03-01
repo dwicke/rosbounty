@@ -44,7 +44,7 @@ while True:
     tick = time.time()
 
     data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-    ddt = np.abs(tick - float(data))
+    ddt = (tick - float(data))
     while(T < ddt):
         data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
         ddt = np.abs(tick - float(data))
