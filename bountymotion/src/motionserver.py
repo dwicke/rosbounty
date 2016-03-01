@@ -194,17 +194,12 @@ if __name__ == "__main__":
                     startTime = curtime
                     if frequency != 5:
                         hzRecv = False
-                        if recvCount == 0.0:
-                            #freqData.append((frequency, 0.0))
-                            #print "frequency was: %d and the succRate was 0" % (frequency)
-                        else:
-                            if switchFreqID == lastID:
-                                switchFreqID -= 1
 
-                            #freqData.append((1.0/T, succIncrementer / totalIncrementer))
-                            #print "frequency was: %d and the succRate was %f" % (1.0/T, succIncrementer / totalIncrementer)
-                            switchFreqID = lastID
-                            lastID = -1
+
+                        #freqData.append((1.0/T, succIncrementer / totalIncrementer))
+                        #print "frequency was: %d and the succRate was %f" % (1.0/T, succIncrementer / totalIncrementer)
+                        switchFreqID = lastID
+                        lastID = -1
                     succCount = 0.0 # reset
                     recvCount = 0.0 # reset
 
