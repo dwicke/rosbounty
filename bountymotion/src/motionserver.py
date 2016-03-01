@@ -15,6 +15,8 @@ totalIncrementer = 0
 succIncrementer = 0
 T = 0.0
 globalTimestampLatest = 0.0
+UDP_IP = "127.0.0.1"
+UDP_PORT = 5005
 
 def handler(signum, frame):
     global totalIncrementer
@@ -126,6 +128,9 @@ if __name__ == "__main__":
         global T
         global globalTimestampLatest
 
+        saveTimeSock = socket.socket(socket.AF_INET, # Internet
+                     socket.SOCK_DGRAM) # UDP
+
         udpCon = ConnectionManager('udp')
         udpCon.addClient('10.112.120.247', port)
         # NY
@@ -163,7 +168,7 @@ if __name__ == "__main__":
         lastID = -1
         switchFreqID = 1
         #signal.setitimer(signal.ITIMER_REAL, 0.5, 0.5)
-        signal.signal(signal.SIGALRM, handler)
+        #signal.signal(signal.SIGALRM, handler)
 
 
 
@@ -208,11 +213,10 @@ if __name__ == "__main__":
                     totalIncrementer = 0
                     succIncrementer = 0
                     T = 1.0 / float(frequency)
-                    signal.setitimer(signal.ITIMER_REAL, 0.5, T)
 
                     curTS = 'tsData_' + str(frequency)
                     print 'frequency = %d' % (frequency)
-
+                    saveTimeSock.sendto(str(globalTimestampLatest), (UDP_IP, UDP_PORT))
 
                 recvID = int(data_ar[2])
                 recvTS = float(data_ar[3])
