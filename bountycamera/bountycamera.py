@@ -14,7 +14,10 @@ import rospy
 import zlib
 import socket
 import time
-
+import ach
+import sys
+import time
+from ctypes import *
 # Ros Messages
 from sensor_msgs.msg import Image
 from bountybondsman.msg import task
@@ -27,6 +30,13 @@ CHANNELS = 3
 INPORT = 8052
 OUTPORT = 15000
 
+
+# Ach files
+class cloud(Structure):
+    _pack_ = 1
+    _fields_ = [("image"  , c_ubyte*320*240*3)]
+
+
 class image_feature:
 
     def __init__(self):
@@ -34,6 +44,8 @@ class image_feature:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # this list should be in ros...
         self.dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT), ('159.203.67.159', INPORT), ('45.55.143.53', INPORT), ('45.55.143.47', INPORT), ('159.203.47.107', INPORT), ( '159.203.47.108',INPORT), ('159.203.47.109', INPORT), ('159.203.47.110', INPORT), ('129.174.121.166', INPORT)]
+        self.startTime = -1
+        self.nextTime = -1
         self.id = 1
         self.initBounty = 30
         # publish a task message
@@ -46,7 +58,10 @@ class image_feature:
         self.subscriber = rospy.Subscriber("/bountybondsman/success",
             success, self.successCallback,  queue_size = 1)
 
-        #self.sock.connect(('10.112.120.213', 8052))
+
+        self.s = ach.Channel('image_chan')
+        self.state = cloud()
+
         # subscribed Topic
         self.subscriber = rospy.Subscriber("/camera/image_raw",
             Image, self.callback,  queue_size = 1)
@@ -65,31 +80,12 @@ class image_feature:
     def callback(self, ros_data):
         '''Callback function of subscribed topic. 
         Here images get converted and features detected'''
-        #curTime = time.time()
-        if VERBOSE :
-        	print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
-        if VERBOSE :
-            print ' len of data = "%d"' %  (len(ros_data.data))
+           
         self.image = bytearray(ros_data.data)
-        image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
-        hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
-        ORANGE_MIN = np.array([5, 50, 50],np.uint8)
-        ORANGE_MAX = np.array([15, 255, 255],np.uint8)
-        reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
-
-        # increase the bounty until get a success message and then reset it.
-        data = "%s,%s,%s" % (str(self.id), str(time.time()), reducedimg.tostring())
-        #print "id sent: %s" % (str(self.id))
-        self.id += 1
-        #print len(zlib.compress(data, 9))
-        self.distributeData(data)
-        #totalTime = time.time() - curTime
-        #print 'Total time %f' % totalTime
-
-    def distributeData(self, data):
-        for datacenter in self.dataCenters:
-            self.sock.sendto(zlib.compress(data, 3), datacenter)
-
+      
+        self.state.image = self.image
+        self.s.put(state)
+        
     def publishTask(self):
         ''' task message is published
             string taskName
