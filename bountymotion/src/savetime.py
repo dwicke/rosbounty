@@ -5,13 +5,13 @@ import time
 
 UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
-f = 10.0
+f = 0.5
 totalIncrementer = 0
 succIncrementer = 0
 T = 1.0 / f
 globalTimestampLatest = 0.0
 
-def handler(signum, frame):
+def saveT():
     global totalIncrementer
     global succIncrementer
     global T
@@ -30,15 +30,21 @@ def handler(signum, frame):
 
 sock = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
-sock.settimeout(0.3)
+sock.settimeout(T)
 sock.bind((UDP_IP, UDP_PORT))
-signal.signal(signal.SIGALRM, handler)
-signal.setitimer(signal.ITIMER_REAL, 0.5, T)
 
 
 
 
 
 while True:
+    sock.settimeout(T)
+    tick = time.time()
     data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-    print data
+
+    tock = time.tock()
+    dt = T - (tock - tick)
+    if dt > 0.0:
+        globalTimestampLatest = float(data)
+        saveT()
+        time.sleep(dt)
