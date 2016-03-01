@@ -31,6 +31,7 @@ def saveT():
 sock = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
 sock.settimeout(T)
+sock.setblocking(0)
 sock.bind((UDP_IP, UDP_PORT))
 
 
