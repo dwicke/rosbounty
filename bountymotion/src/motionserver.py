@@ -12,6 +12,7 @@ from DataCollector import DataCollector
 
 
 def handler(signum, frame):
+    print "I am in the handler!!!!!!!!!!!"
     global succIncrementer
     global totalIncrementer
     global globalTimestampLatest
@@ -152,7 +153,7 @@ if __name__ == "__main__":
         hzRecv = True
         lastID = -1
         switchFreqID = 1
-
+        signal.signal(signal.SIGALRM, handler)
 
 
 
@@ -198,6 +199,7 @@ if __name__ == "__main__":
                     succIncrementer = 0
                     T = 1.0 / float(frequency)
                     signal.setitimer(signal.ITIMER_REAL, 0.5, T)
+
                     curTS = 'tsData_' + str(frequency)
                     print 'frequency = %d' % (frequency)
 
