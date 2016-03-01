@@ -4,10 +4,26 @@ import socket
 import rospy
 import time
 import json
+import signal
 from geometry_msgs.msg import Twist
 from bountybondsman.msg import success
 from ConnectionManager import ConnectionManager
 from DataCollector import DataCollector
+
+
+def handler(signum, frame):
+    global succIncrementer
+    global totalIncrementer
+    global globalTimestampLatest
+    global T
+    t = time.time()
+    dt = t - globalTimestampLatest
+    if dt < T:
+        succIncrementer += 1
+    totalIncrementer += 1
+
+
+
 
 
 def robot_vel(forward, angular):
@@ -92,6 +108,10 @@ if __name__ == "__main__":
 
 
         global udpCon
+        global totalIncrementer = 0
+        global succIncrementer = 0
+        global T = 0.0
+        global globalTimestampLatest
         udpCon = ConnectionManager('udp')
         udpCon.addClient('10.112.120.247', port)
         # NY
@@ -128,6 +148,12 @@ if __name__ == "__main__":
         hzRecv = True
         lastID = -1
         switchFreqID = 1
+
+
+
+
+
+
         while not rospy.is_shutdown() and frequency <= endFreq:
             if count == 100:
                 #udpCon.send('HI I am udp motion message')
@@ -154,13 +180,20 @@ if __name__ == "__main__":
                         else:
                             if switchFreqID == lastID:
                                 switchFreqID -= 1
-                            freqData.append((frequency, succCount / (lastID - switchFreqID)))
-                            print "frequency was: %d and the succRate was %f" % (frequency, succCount / (lastID - switchFreqID))
+
+                            freqData.append((1.0/T, succIncrementer / totalIncrementer))
+                            print "frequency was: %d and the succRate was %f" % (1.0/T, succIncrementer / totalIncrementer)
                             switchFreqID = lastID
                             lastID = -1
                     succCount = 0.0 # reset
                     recvCount = 0.0 # reset
+
+
                     frequency += 5.0
+                    totalIncrementer = 0
+                    succIncrementer = 0
+                    T = 1.0 / frequency
+                    signal.setitimer(signal.ITIMER_REAL, 0.5, T)
                     curTS = 'tsData_' + str(frequency)
                     print 'frequency = %d' % (frequency)
 
@@ -176,13 +209,13 @@ if __name__ == "__main__":
                 if recvID > preID:
 
                     #print "recvID = %d %f - %f = %f" %(recvID, curtime, recvTS, totalTime)
-                    print "recvID = %d forward: %f ang: %f from %s total time %f desired time = %f" % (recvID, forward, ang, addr, totalTime, 1.0/frequency)
+                    #print "recvID = %d forward: %f ang: %f from %s total time %f desired time = %f" % (recvID, forward, ang, addr, totalTime, 1.0/frequency)
                     # do motion stuff
                     if curFor != forward or curAng != ang:
                         robot_vel(forward, ang)
                         curFor = forward
                         curAng = ang
-
+                    globalTimestampLatest = recvTS
                     preID = recvID
                     recvCount += 1.0 # i got something that i maybe can use
                     # now send the success message as long as the totalTime is less than the threshold
