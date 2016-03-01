@@ -65,7 +65,7 @@ class image_feature:
     def callback(self, ros_data):
         '''Callback function of subscribed topic. 
         Here images get converted and features detected'''
-        curTime = time.time()
+        #curTime = time.time()
         if VERBOSE :
         	print 'received image of size: "%d" x "%d"' % (ros_data.width, ros_data.height)
         if VERBOSE :
@@ -83,8 +83,8 @@ class image_feature:
         self.id += 1
         #print len(zlib.compress(data, 9))
         self.distributeData(data)
-        totalTime = time.time() - curTime
-        print 'Total time %f' % totalTime
+        #totalTime = time.time() - curTime
+        #print 'Total time %f' % totalTime
 
     def distributeData(self, data):
         for datacenter in self.dataCenters:
