@@ -10,13 +10,6 @@ succIncrementer = 0
 T = 1.0 / f
 globalTimestampLatest = 0.0
 
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-sock.bind((UDP_IP, UDP_PORT))
-signal.signal(signal.SIGALRM, handler)
-signal.setitimer(signal.ITIMER_REAL, 0.5, T)
-
-
 def handler(signum, frame):
     global totalIncrementer
     global succIncrementer
@@ -34,7 +27,18 @@ def handler(signum, frame):
         succIncrementer += 1
     totalIncrementer += 1
 
+sock = socket.socket(socket.AF_INET, # Internet
+                     socket.SOCK_DGRAM) # UDP
+sock.settimeout(0.3)
+sock.bind((UDP_IP, UDP_PORT))
+signal.signal(signal.SIGALRM, handler)
+signal.setitimer(signal.ITIMER_REAL, 0.5, T)
+
+
+
+
 
 while True:
+
     data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
     print data
