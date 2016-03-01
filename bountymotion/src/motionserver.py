@@ -199,7 +199,7 @@ if __name__ == "__main__":
                     totalIncrementer = 0
                     succIncrementer = 0
                     T = 1.0 / float(frequency)
-                    signal.setitimer(signal.ITIMER_PROF, 0.5, T)
+                    signal.setitimer(signal.ITIMER_VIRTUAL, 0.5, T)
 
                     curTS = 'tsData_' + str(frequency)
                     print 'frequency = %d' % (frequency)
