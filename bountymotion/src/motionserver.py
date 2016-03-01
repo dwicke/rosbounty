@@ -9,6 +9,22 @@ from geometry_msgs.msg import Twist
 from bountybondsman.msg import success
 from ConnectionManager import ConnectionManager
 from DataCollector import DataCollector
+import ach
+import sys
+import time
+from ctypes import *
+
+
+# Ach files
+class cloud(Structure):
+    _pack_ = 1
+    _fields_ = [("data"  , c_double)]
+
+s = ach.Channel('cloud_chan')
+state = cloud()
+
+
+
 
 
 totalIncrementer = 0
@@ -230,7 +246,8 @@ if __name__ == "__main__":
                         curFor = forward
                         curAng = ang
                     globalTimestampLatest = recvTS
-                    saveTimeSock.sendto(str(globalTimestampLatest), (UDP_IP, UDP_PORT))
+                    state.data = recvTS
+                    s.put(state)
                     preID = recvID
                     recvCount += 1.0 # i got something that i maybe can use
                     # now send the success message as long as the totalTime is less than the threshold
