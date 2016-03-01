@@ -11,7 +11,16 @@ from ConnectionManager import ConnectionManager
 from DataCollector import DataCollector
 
 
+totalIncrementer = 0
+succIncrementer = 0
+T = 0.0
+globalTimestampLatest = 0.0
+
 def handler(signum, frame):
+    global totalIncrementer
+    global succIncrementer
+    global T
+    global globalTimestampLatest
     #print "I am in the handler!!!!!!!!!!!"
     # global succIncrementer
     # global totalIncrementer
@@ -113,13 +122,10 @@ if __name__ == "__main__":
 
         global udpCon
         global totalIncrementer
-        totalIncrementer =0
         global succIncrementer
-        succIncrementer = 0
         global T
-        T = 0.0
         global globalTimestampLatest
-        globalTimestampLatest = 0.0
+
         udpCon = ConnectionManager('udp')
         udpCon.addClient('10.112.120.247', port)
         # NY
