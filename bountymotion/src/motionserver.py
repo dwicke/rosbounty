@@ -216,7 +216,6 @@ if __name__ == "__main__":
 
                     curTS = 'tsData_' + str(frequency)
                     print 'frequency = %d' % (frequency)
-                    saveTimeSock.sendto(str(globalTimestampLatest), (UDP_IP, UDP_PORT))
 
                 recvID = int(data_ar[2])
                 recvTS = float(data_ar[3])
@@ -236,6 +235,7 @@ if __name__ == "__main__":
                         curFor = forward
                         curAng = ang
                     globalTimestampLatest = recvTS
+                    saveTimeSock.sendto(str(globalTimestampLatest), (UDP_IP, UDP_PORT))
                     preID = recvID
                     recvCount += 1.0 # i got something that i maybe can use
                     # now send the success message as long as the totalTime is less than the threshold
