@@ -195,14 +195,14 @@ if __name__ == "__main__":
                     if frequency != 5:
                         hzRecv = False
                         if recvCount == 0.0:
-                            freqData.append((frequency, 0.0))
-                            print "frequency was: %d and the succRate was 0" % (frequency)
+                            #freqData.append((frequency, 0.0))
+                            #print "frequency was: %d and the succRate was 0" % (frequency)
                         else:
                             if switchFreqID == lastID:
                                 switchFreqID -= 1
 
                             #freqData.append((1.0/T, succIncrementer / totalIncrementer))
-                            print "frequency was: %d and the succRate was %f" % (1.0/T, succIncrementer / totalIncrementer)
+                            #print "frequency was: %d and the succRate was %f" % (1.0/T, succIncrementer / totalIncrementer)
                             switchFreqID = lastID
                             lastID = -1
                     succCount = 0.0 # reset
@@ -246,7 +246,7 @@ if __name__ == "__main__":
                             #print 'Sent success'
                         sendSuccess(taskName, recvID, addr, totalTime, succCount, recvCount)
 
-                    freqTS.addPoint(curTS, (recvTS, succCount / recvID, recvID, succCount))
+                    #freqTS.addPoint(curTS, (recvTS, succCount / recvID, recvID, succCount))
 
                     #else:
                         # condsider sending a success message with no one as the winner?...
