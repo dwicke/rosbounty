@@ -200,7 +200,7 @@ class image_feature(object):
 		ORANGE_MAX = np.array([15, 255, 255],np.uint8)
 		reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
 
-        	self.sh_image[0] = reducedimg
+        self.sh_image[0] = reducedimg
 	def publishTask(self):
 		''' task message is published
 			string taskName
