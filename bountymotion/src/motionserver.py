@@ -4,6 +4,8 @@ from multiprocessing import Process, Manager
 from geometry_msgs.msg import Twist
 from bountybondsman.msg import success
 from ConnectionManager import ConnectionManager
+from sensor_msgs.msg import Image
+from bountybondsman.msg import task
 from DataCollector import DataCollector
 import cv2
 import zlib
@@ -62,7 +64,7 @@ def shutdown():
 
 def controlLoop(sharedImage):
 
-	rospy.init_node('motionserver', anonymous=True)
+	#rospy.init_node('motionserver', anonymous=True)
 	global pub
 	pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
 	rospy.on_shutdown(shutdown)
@@ -128,9 +130,9 @@ def controlLoop(sharedImage):
         #[statuss, framesizes] = s.get(state, wait=False, last=True)
         #print str(state.image)
         
-        image = sharedImage[0]
+        	image = sharedImage[0]
 		# process the image
-
+		#print image
 		hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
 		ORANGE_MIN = np.array([5, 50, 50],np.uint8)
 		ORANGE_MAX = np.array([15, 255, 255],np.uint8)
@@ -175,7 +177,7 @@ class image_feature(object):
 		'''Initialize ros subscriber'''
 
 		self.sh_image = sh_image
-
+		self.initBounty = 30
 		## setup the publisher
 		self.taskPub = rospy.Publisher('/bountybondsman/task', task, queue_size=10)
 
@@ -187,13 +189,18 @@ class image_feature(object):
 		'''Callback function of subscribed topic.
 		Here images get put into the shared memory'''
 
-		self.image = bytearray(ros_data.image)
+		self.image = bytearray(ros_data.data)
+		
+		HEIGHT = 240
+		WIDTH = 320
+		CHANNELS = 3
 		image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
-
-		#self.state.image = self.image
-        #self.s.put(self.state)
-        sh_image[0] = image
-
+		#print image
+		
+        	self.sh_image[0] = image
+		#print self.sh_image[0]
+		#print self.sh_image[0] == image
+		#print len(self.sh_image[0])
 	def publishTask(self):
 		''' task message is published
 			string taskName
@@ -204,6 +211,8 @@ class image_feature(object):
 			uint32 inputPort
 			uint32 outputPort
 		'''
+		INPORT = 8052
+		OUTPORT = 15000
 		msg = task()
 		msg.taskName = "visualServoing"
 		# me, nyc, sfo
@@ -220,16 +229,16 @@ class image_feature(object):
 
 def main(args):
 	'''Initializes and cleanup ros node'''
-    manager = Manager()
-    imageBuffer = manager.list(1)
+	manager = Manager()
+	imageBuffer = manager.list([1])
 	ic = image_feature(imageBuffer)
-	rospy.init_node('bountycamera', anonymous=True)
+	rospy.init_node('bountymotion', anonymous=True)
 	ic.publishTask()
 	# start the child process
 	
 	p = Process(target=controlLoop, args=(imageBuffer))
-    p.daemon = True
-    p.start()
+	p.daemon = True
+	p.start()
 
 
 	try:
