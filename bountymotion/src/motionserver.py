@@ -121,13 +121,13 @@ def controlLoop(sharedImage):
 	#[statuss, framesizes] = s.get(state, wait=False, last=True)
 	#print str(state.image)
 	
-		image = sharedImage[0]
+		imagestring = sharedImage[0]
 		# process the image
-		print len(image.tostring())
+		print len(imagestring)
 
 	
 		totalInc += 1.0
-		data = "%s,%s,%s" % (str(totalInc), str(tick), image.tostring())
+		data = "%s,%s,%s" % (str(totalInc), str(tick), imagestring)
 
 		for datacenter in dataCenters:
 			sock.sendto(zlib.compress(data, 3), datacenter)
