@@ -92,7 +92,7 @@ def controlLoop(sharedImage):
 
 
 	s = ach.Channel('image_chan', 5, 230)
-	state = cloud()
+	
 
 	preID = 0
 	curFor = -5.0
