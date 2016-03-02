@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
-from multiprocessing import Process, Manager
+from multiprocessing import Process, Array
 from geometry_msgs.msg import Twist
 from bountybondsman.msg import success
 from ConnectionManager import ConnectionManager
@@ -121,7 +121,7 @@ def controlLoop(sharedImage):
 	#[statuss, framesizes] = s.get(state, wait=False, last=True)
 	#print str(state.image)
 	
-		imagestring = sharedImage[0]
+		imagestring = sharedImage.value
 		# process the image
 		print len(imagestring)
 
@@ -191,7 +191,7 @@ class image_feature(object):
 		ORANGE_MAX = np.array([15, 255, 255],np.uint8)
 		reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
 		#print "before = ", len(reducedimg.tostring())
-		self.sh_image[0] = reducedimg.tostring()
+		self.sh_image.value = reducedimg.tostring()
 		#print "after =", len(self.sh_image[0])
 
 	def publishTask(self):
@@ -222,8 +222,9 @@ class image_feature(object):
 
 def main(args):
 	'''Initializes and cleanup ros node'''
-	manager = Manager()
-	imageBuffer = manager.list([1])
+	#manager = Manager()
+	#imageBuffer = manager.list([1])
+	imageBuffer = Array('c', 80000, lock = True)
 	ic = image_feature(imageBuffer)
 	rospy.init_node('bountymotion', anonymous=True)
 	ic.publishTask()
