@@ -132,13 +132,13 @@ def controlLoop(sharedImage):
         
         	image = sharedImage[0]
 		# process the image
-		#print image
+		print len(image.tostring())
 		
 		totalInc += 1.0
-		#data = "%s,%s,%s" % (str(totalInc), str(tick), reducedimg.tostring())
+		data = "%s,%s,%s" % (str(totalInc), str(tick), image.tostring())
 
 		for datacenter in dataCenters:
-			sock.sendto(zlib.compress(image, 3), datacenter)
+			sock.sendto(zlib.compress(data, 3), datacenter)
 
 		t = time.time()
 
@@ -193,11 +193,13 @@ class image_feature(object):
 		CHANNELS = 3
 		image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
 		#print image
-		
-        	self.sh_image[0] = image
-		#print self.sh_image[0]
-		#print self.sh_image[0] == image
-		#print len(self.sh_image[0])
+
+		hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
+		ORANGE_MIN = np.array([5, 50, 50],np.uint8)
+		ORANGE_MAX = np.array([15, 255, 255],np.uint8)
+		reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
+
+        	self.sh_image[0] = reducedimg
 	def publishTask(self):
 		''' task message is published
 			string taskName
