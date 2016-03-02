@@ -135,34 +135,34 @@ def decideWinner(recvData):
 			print len(image.tostring())
 
 		
-		totalInc += 1.0
-		data = "%s,%s,%s" % (str(totalInc), str(tick), image.tostring())
+			totalInc += 1.0
+			data = "%s,%s,%s" % (str(totalInc), str(tick), image.tostring())
 
-		for datacenter in dataCenters:
-			sock.sendto(zlib.compress(data, 3), datacenter)
+			for datacenter in dataCenters:
+				sock.sendto(zlib.compress(data, 3), datacenter)
 
-		t = time.time()
+			t = time.time()
 
-		recvData = udpCon.recv(T-(t-tick))
-		data_ar, addr = decideWinner(recvData)
-		if addr != None:
-			recvID = int(data_ar[2])
-			recvTS = float(data_ar[3])
-			taskName = data_ar[4].strip()
-			forward = float(data_ar[0])
-			ang = float(data_ar[1])
-			if recvID > preID:
-				preID = recvID
-				if curFor != forward or curAng != ang:
-					robot_vel(forward, ang)
-					curFor = forward
-					curAng = ang
+			recvData = udpCon.recv(T-(t-tick))
+			data_ar, addr = decideWinner(recvData)
+			if addr != None:
+				recvID = int(data_ar[2])
+				recvTS = float(data_ar[3])
+				taskName = data_ar[4].strip()
+				forward = float(data_ar[0])
+				ang = float(data_ar[1])
+				if recvID > preID:
+					preID = recvID
+					if curFor != forward or curAng != ang:
+						robot_vel(forward, ang)
+						curFor = forward
+						curAng = ang
 
-			if recvID == totalInc: # we are getting it in time
-				succInc += 1
-			tock = time.time()
-			if T - (tock-tick) > 0:
-				time.sleep(T - (tock - tick))
+				if recvID == totalInc: # we are getting it in time
+					succInc += 1
+				tock = time.time()
+				if T - (tock-tick) > 0:
+					time.sleep(T - (tock - tick))
 
 
 
