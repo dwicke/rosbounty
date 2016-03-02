@@ -29,110 +29,111 @@ def decideWinner(recvData):
 		if datum[0] != 'connected':
 			data_ar = datum[0].split(',')
 			recvID = int(data_ar[2])
-			if recvID > maxID:
-				maxID = recvID
-				curWinner = data_ar
-				winnerIP = datum[1][0]
+				if recvID > maxID:
+					maxID = recvID
+					curWinner = data_ar
+					winnerIP = datum[1][0]
 
-	return curWinner, winnerIP
+		return curWinner, winnerIP
 
-def robot_vel(forward, angular):
-	twist = Twist()
-	twist.linear.x = forward
-	twist.linear.y = 0
-	twist.linear.z = 0
-	twist.angular.x = 0
-	twist.angular.y = 0
-	twist.angular.z = angular
-	pub.publish(twist)
-
-
+	def robot_vel(forward, angular):
+		twist = Twist()
+		twist.linear.x = forward
+		twist.linear.y = 0
+		twist.linear.z = 0
+		twist.angular.x = 0
+		twist.angular.y = 0
+		twist.angular.z = angular
+		pub.publish(twist)
 
 
 
 
-# Ach files
-class cloud(Structure):
-	_pack_ = 1
-	_fields_ = [("image"  , c_char*230400)]
+
+
+	# Ach files
+	class cloud(Structure):
+		_pack_ = 1
+		_fields_ = [("image"  , c_char*230400)]
 
 
 
-def shutdown():
-	# stop the robot
-	robot_vel(0,0)
+	def shutdown():
+		# stop the robot
+		robot_vel(0,0)
 
-def controlLoop(sharedImage):
+	def controlLoop(sharedImage):
 
-	#rospy.init_node('motionserver', anonymous=True)
-	global pub
-	pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
-	rospy.on_shutdown(shutdown)
+		#rospy.init_node('motionserver', anonymous=True)
+		global pub
+		pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
+		rospy.on_shutdown(shutdown)
 
-	INPORT = 8052
+		INPORT = 8052
 
-	# set up the connection to the servers
-	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT), ('159.203.67.159', INPORT), ('45.55.143.53', INPORT), ('45.55.143.47', INPORT), ('159.203.47.107', INPORT), ( '159.203.47.108',INPORT), ('159.203.47.109', INPORT), ('159.203.47.110', INPORT), ('129.174.121.166', INPORT)]
-
-
-	port = 15000
-	# tell the servers to send stuff here
-	udpCon = ConnectionManager('udp')
-	udpCon.addClient('10.112.120.247', port)
-	# NY
-	udpCon.addClient('104.131.172.175', port)
-	udpCon.addClient('159.203.67.159', port)
-	udpCon.addClient('45.55.143.47', port)
-	udpCon.addClient('45.55.143.53', port)
-	# TOR
-	udpCon.addClient('159.203.47.110', port)
-	udpCon.addClient('159.203.47.109', port)
-	udpCon.addClient('159.203.47.108', port)
-	udpCon.addClient('159.203.47.107', port)
-
-	udpCon.addClient('129.174.121.166', port)
+		# set up the connection to the servers
+		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		dataCenters = [('10.112.120.247', INPORT), ('104.131.172.175', INPORT), ('159.203.67.159', INPORT), ('45.55.143.53', INPORT), ('45.55.143.47', INPORT), ('159.203.47.107', INPORT), ( '159.203.47.108',INPORT), ('159.203.47.109', INPORT), ('159.203.47.110', INPORT), ('129.174.121.166', INPORT)]
 
 
-	udpCon.send('HI I am udp motion message')
-	while len(udpCon.recv(1)) == 0:
+		port = 15000
+		# tell the servers to send stuff here
+		udpCon = ConnectionManager('udp')
+		udpCon.addClient('10.112.120.247', port)
+		# NY
+		udpCon.addClient('104.131.172.175', port)
+		udpCon.addClient('159.203.67.159', port)
+		udpCon.addClient('45.55.143.47', port)
+		udpCon.addClient('45.55.143.53', port)
+		# TOR
+		udpCon.addClient('159.203.47.110', port)
+		udpCon.addClient('159.203.47.109', port)
+		udpCon.addClient('159.203.47.108', port)
+		udpCon.addClient('159.203.47.107', port)
+
+		udpCon.addClient('129.174.121.166', port)
+
+
 		udpCon.send('HI I am udp motion message')
-	print 'Recv response'
+		while len(udpCon.recv(1)) == 0:
+			udpCon.send('HI I am udp motion message')
+		print 'Recv response'
 
 
-	s = ach.Channel('image_chan', 5, 230)
-	state = cloud()
+		s = ach.Channel('image_chan', 5, 230)
+		state = cloud()
 
-	preID = 0
-	curFor = -5.0
-	curAng = -5.0
+		preID = 0
+		curFor = -5.0
+		curAng = -5.0
 
-	totalInc = 0.0
-	succInc = 0.0
-
-	f = 5.0
-	T = 1.0 / f
-	HEIGHT = 240
-	WIDTH = 320
-	CHANNELS = 3
-
-
-	for i in range(1,15):
-		succInc = 0.0
 		totalInc = 0.0
+		succInc = 0.0
 
-		doLoop = True
-		fn = f*i
-		T = 1.0/fn
+		f = 5.0
+		T = 1.0 / f
+		HEIGHT = 240
+		WIDTH = 320
+		CHANNELS = 3
 
 
-		tick = time.time()
-        #[statuss, framesizes] = s.get(state, wait=False, last=True)
-        #print str(state.image)
-        
-        	image = sharedImage[0]
-		# process the image
-		print len(image.tostring())
+		for i in range(1,15):
+			succInc = 0.0
+			totalInc = 0.0
+
+			doLoop = True
+			fn = f*i
+			T = 1.0/fn
+
+
+			tick = time.time()
+		#[statuss, framesizes] = s.get(state, wait=False, last=True)
+		#print str(state.image)
+		
+			image = sharedImage[0]
+			# process the image
+			print len(image.tostring())
+
 		
 		totalInc += 1.0
 		data = "%s,%s,%s" % (str(totalInc), str(tick), image.tostring())
