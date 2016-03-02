@@ -19,6 +19,8 @@ import rospy
 from ctypes import *
 
 
+sharedImage = None
+
 def decideWinner(recvData):
 	maxID = -1
 	curWinner = None
@@ -54,10 +56,11 @@ def shutdown():
 	# stop the robot
 	robot_vel(0,0)
 
-def controlLoop(sharedImage):
+def controlLoop():
 
 	#rospy.init_node('motionserver', anonymous=True)
 	global pub
+	global sharedImage
 	pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
 	rospy.on_shutdown(shutdown)
 
@@ -121,8 +124,12 @@ def controlLoop(sharedImage):
 		tick = time.time()
 	#[statuss, framesizes] = s.get(state, wait=False, last=True)
 	#print str(state.image)
-	
+		if sharedImage == None:
+			continue
+
+
 		imagestring = sharedImage.value
+		
 		# process the image
 		print len(imagestring)
 
@@ -163,10 +170,9 @@ def controlLoop(sharedImage):
 
 class image_feature(object):
 
-	def __init__(self, sh_image):
+	def __init__(self):
 		'''Initialize ros subscriber'''
 
-		self.sh_image = sh_image
 		self.initBounty = 30
 		## setup the publisher
 		self.taskPub = rospy.Publisher('/bountybondsman/task', task, queue_size=10)
@@ -178,7 +184,7 @@ class image_feature(object):
 	def callback(self, ros_data):
 		'''Callback function of subscribed topic.
 		Here images get put into the shared memory'''
-
+		global sharedImage
 		self.image = bytearray(ros_data.data)
 		
 		HEIGHT = 240
@@ -192,7 +198,7 @@ class image_feature(object):
 		ORANGE_MAX = np.array([15, 255, 255],np.uint8)
 		reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
 		#print "before = ", len(reducedimg.tostring())
-		self.sh_image.value = reducedimg.tostring()
+		sharedImage.value = reducedimg.tostring()
 		#print "after =", len(self.sh_image[0])
 
 	def publishTask(self):
@@ -223,15 +229,14 @@ class image_feature(object):
 
 def main(args):
 	'''Initializes and cleanup ros node'''
-	#manager = Manager()
-	#imageBuffer = manager.list([1])
-	imageBuffer = mp.Array('c', 80000)
-	ic = image_feature(imageBuffer)
+	global sharedImage
+	sharedImage = mp.Array('c', 80000)
+	ic = image_feature()
 	rospy.init_node('bountymotion', anonymous=True)
 	ic.publishTask()
 	# start the child process
 	
-	p = mp.Process(target=controlLoop, args=(imageBuffer))
+	p = mp.Process(target=controlLoop, args=())
 	p.daemon = True
 	p.start()
 
