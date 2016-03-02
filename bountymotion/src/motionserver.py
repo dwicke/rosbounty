@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import numpy as np
-from multiprocessing import Process, Array
+import ctypes
+import multiprocessing as mp
 from geometry_msgs.msg import Twist
 from bountybondsman.msg import success
 from ConnectionManager import ConnectionManager
@@ -224,13 +225,13 @@ def main(args):
 	'''Initializes and cleanup ros node'''
 	#manager = Manager()
 	#imageBuffer = manager.list([1])
-	imageBuffer = Array('c', 80000, lock = True)
+	imageBuffer = mp.Array('c', 80000)
 	ic = image_feature(imageBuffer)
 	rospy.init_node('bountymotion', anonymous=True)
 	ic.publishTask()
 	# start the child process
 	
-	p = Process(target=controlLoop, args=(imageBuffer))
+	p = mp.Process(target=controlLoop, args=(imageBuffer))
 	p.daemon = True
 	p.start()
 
