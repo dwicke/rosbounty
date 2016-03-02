@@ -125,8 +125,10 @@ def controlLoop(sharedImage):
 
 
 		tick = time.time()
-		[statuss, framesizes] = s.get(state, wait=False, last=True)
-		print str(state.image)
+        #[statuss, framesizes] = s.get(state, wait=False, last=True)
+        #print str(state.image)
+        
+        image = sharedImage[0]
 		# process the image
 
 		hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
@@ -189,7 +191,8 @@ class image_feature(object):
 		image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
 
 		#self.state.image = self.image
-		self.s.put(self.state)
+        #self.s.put(self.state)
+        sh_image[0] = image
 
 	def publishTask(self):
 		''' task message is published
@@ -217,13 +220,15 @@ class image_feature(object):
 
 def main(args):
 	'''Initializes and cleanup ros node'''
-	ic = image_feature()
+    manager = Manager()
+    imageBuffer = manager.list(1)
+	ic = image_feature(imageBuffer)
 	rospy.init_node('bountycamera', anonymous=True)
 	ic.publishTask()
 	# start the child process
-	manager = Manager()
-	l = manager.list(1)
-	p = Process(target=controlLoop, args=(l))
+	
+	p = Process(target=controlLoop, args=(imageBuffer))
+    p.daemon = True
     p.start()
 
 
