@@ -131,10 +131,7 @@ def controlLoop(sharedImage):
         image = sharedImage[0]
 		# process the image
 
-		hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
-		ORANGE_MIN = np.array([5, 50, 50],np.uint8)
-		ORANGE_MAX = np.array([15, 255, 255],np.uint8)
-		reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
+		
 		totalInc += 1.0
 		data = "%s,%s,%s" % (str(totalInc), str(tick), reducedimg.tostring())
 
@@ -190,9 +187,11 @@ class image_feature(object):
 		self.image = bytearray(ros_data.image)
 		image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
 
-		#self.state.image = self.image
-        #self.s.put(self.state)
-        sh_image[0] = image
+		hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
+		ORANGE_MIN = np.array([5, 50, 50],np.uint8)
+		ORANGE_MAX = np.array([15, 255, 255],np.uint8)
+		reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
+        sh_image[0] = reducedimg
 
 	def publishTask(self):
 		''' task message is published
