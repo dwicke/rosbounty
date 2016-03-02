@@ -190,9 +190,9 @@ class image_feature(object):
 		ORANGE_MIN = np.array([5, 50, 50],np.uint8)
 		ORANGE_MAX = np.array([15, 255, 255],np.uint8)
 		reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
-		print "before = ", len(reducedimg.tostring())
+		#print "before = ", len(reducedimg.tostring())
 		self.sh_image[0] = reducedimg.tostring()
-		print "after =", len(self.sh_image[0])
+		#print "after =", len(self.sh_image[0])
 
 	def publishTask(self):
 		''' task message is published
