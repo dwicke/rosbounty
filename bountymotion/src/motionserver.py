@@ -61,6 +61,9 @@ def controlLoop():
 	#rospy.init_node('motionserver', anonymous=True)
 	global pub
 	global sharedImage
+
+	time.sleep(2)
+	
 	pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
 	rospy.on_shutdown(shutdown)
 
@@ -111,6 +114,7 @@ def controlLoop():
 	WIDTH = 320
 	CHANNELS = 3
 
+	freqDuration = 15
 
 	for i in range(1,15):
 		succInc = 0.0
@@ -120,48 +124,54 @@ def controlLoop():
 		fn = f*i
 		T = 1.0/fn
 
+		freqStartTime = time.time()
 
-		tick = time.time()
-	#[statuss, framesizes] = s.get(state, wait=False, last=True)
-	#print str(state.image)
-		if sharedImage == None:
-			continue
+		while doLoop:
+
+			tick = time.time()
+
+			if tick - freqStartTime > freqDuration:
+				break
 
 
-		imagestring = sharedImage.value
+			if sharedImage == None:
+				continue
+
+
+			imagestring = sharedImage.value
 		
-		# process the image
-		print len(imagestring)
+			# process the image
+			print len(imagestring)
 
 	
-		totalInc += 1.0
-		data = "%s,%s,%s" % (str(totalInc), str(tick), imagestring)
+			totalInc += 1.0
+			data = "%s,%s,%s" % (str(totalInc), str(tick), imagestring)
 
-		for datacenter in dataCenters:
-			sock.sendto(zlib.compress(data, 3), datacenter)
+			for datacenter in dataCenters:
+				sock.sendto(zlib.compress(data, 3), datacenter)
 
-		t = time.time()
+			t = time.time()
 
-		recvData = udpCon.recv(T-(t-tick))
-		data_ar, addr = decideWinner(recvData)
-		if addr != None:
-			recvID = int(data_ar[2])
-			recvTS = float(data_ar[3])
-			taskName = data_ar[4].strip()
-			forward = float(data_ar[0])
-			ang = float(data_ar[1])
-			if recvID > preID:
-				preID = recvID
-				if curFor != forward or curAng != ang:
-					robot_vel(forward, ang)
-					curFor = forward
-					curAng = ang
+			recvData = udpCon.recv(T-(t-tick))
+			data_ar, addr = decideWinner(recvData)
+			if addr != None:
+				recvID = int(data_ar[2])
+				recvTS = float(data_ar[3])
+				taskName = data_ar[4].strip()
+				forward = float(data_ar[0])
+				ang = float(data_ar[1])
+				if recvID > preID:
+					preID = recvID
+					if curFor != forward or curAng != ang:
+						robot_vel(forward, ang)
+						curFor = forward
+						curAng = ang
 
-			if recvID == totalInc: # we are getting it in time
-				succInc += 1
-			tock = time.time()
-			if T - (tock-tick) > 0:
-				time.sleep(T - (tock - tick))
+				if recvID == totalInc: # we are getting it in time
+					succInc += 1
+				tock = time.time()
+				if T - (tock-tick) > 0:
+					time.sleep(T - (tock - tick))
 
 
 
