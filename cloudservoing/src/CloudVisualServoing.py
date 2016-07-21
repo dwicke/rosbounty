@@ -17,6 +17,7 @@ import cv2
 
 ## messages
 from geometry_msgs.msg import Twist
+from sensor_msgs.msg import Image
 from DataCollector import DataCollector
 
 
@@ -51,6 +52,8 @@ if __name__ == "__main__":
     rospy.init_node('motionserver', anonymous=True)
     global pub
     pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
+    ## not sure yet how to do this.. i'd like to not use ROS for getting images
+    ##subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
     rospy.on_shutdown(shutdown)
 
     # how long do we wait for a message from the servers
