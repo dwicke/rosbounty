@@ -53,7 +53,7 @@ if __name__ == "__main__":
     global pub
     pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
     ## not sure yet how to do this.. i'd like to not use ROS for getting images
-    ##subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
+    subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
     rospy.on_shutdown(shutdown)
 
     # how long do we wait for a message from the servers
