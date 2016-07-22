@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 ## ACH and comm stuff
 import ach
 import subprocess
@@ -38,7 +38,7 @@ class BountyCloudVS:
 
     def __init__(self):
 
-        self.pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
+        self.pub = rospy.Publisher('/pioneer/cmd_vel', Twist, queue_size=10)
         self.subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
         rospy.on_shutdown(self.shutdown)
 

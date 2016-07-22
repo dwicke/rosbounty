@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 ## ACH and comm stuff
 import ach
 import subprocess
