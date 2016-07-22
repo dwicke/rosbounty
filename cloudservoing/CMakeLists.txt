@@ -124,4 +124,4 @@ include_directories(
 )
 
 
-target_link_libraries(${catkin_LIBRARIES} Aria)
+target_link_libraries(Aria)
