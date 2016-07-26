@@ -121,11 +121,11 @@ class BountyCloudVS:
 
         if winner == None:
             ### if it times out restart the loop and count as a fail
-            failCount += 1
+            self.failCount += 1
             print("did not get a response")
         else:
             ### if we have a msg count as success and then send commands to the servos
-            succCount += 1
+            self.succCount += 1
             self.robot_vel(winner.forwardVelocity, winner.angularVelocity)
             print("Got a resonse and set the robot velocity {} {}".format(winner.forwardVelocity, winner.angularVelocity))
 
