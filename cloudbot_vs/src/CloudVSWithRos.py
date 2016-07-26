@@ -10,6 +10,7 @@ import zlib
 import rospy
 import time
 import signal, os
+import sys
 
 ## camera stuff
 import numpy as np
@@ -18,7 +19,7 @@ import cv2
 ## messages
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Image
-from DataCollector import DataCollector
+#from DataCollector import DataCollector
 
 
 
