@@ -55,8 +55,8 @@ class BountyCloudVS:
         self.taskSendChannels = []
         self.taskRecvChannels = []
         for server in servers:
-            self.taskSendChannels.append(ach.Channel(server + "-VSTaskImg")) # sending on
-            self.taskRecvChannels.append(ach.Channel(server + "-VSResp")) # receiving from
+            self.taskSendChannels.append(ach.Channel(server + "VSTaskImg")) # sending on
+            self.taskRecvChannels.append(ach.Channel(server + "VSResp")) # receiving from
 
 
         self.id = 0.0
