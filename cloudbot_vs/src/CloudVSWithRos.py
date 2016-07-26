@@ -20,8 +20,8 @@ import cv2
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Image
 #from DataCollector import DataCollector
-HEIGHT = 800
-WIDTH = 800
+HEIGHT = 240
+WIDTH = 320
 CHANNELS = 3
 
 
