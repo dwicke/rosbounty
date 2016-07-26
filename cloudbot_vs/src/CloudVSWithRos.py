@@ -69,12 +69,12 @@ class BountyCloudVS:
         self.succCount = 0
 
 
-    def shutdown():
+    def shutdown(self):
         # stop the robot
         self.robot_vel(0,0)
         # write out the success and fails?
 
-    def robot_vel(forward, angular):
+    def robot_vel(self, forward, angular):
         twist = Twist()
         twist.linear.x = forward
         twist.linear.y = 0
