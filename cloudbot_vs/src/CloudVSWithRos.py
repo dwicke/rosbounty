@@ -60,7 +60,7 @@ class BountyCloudVS:
 
             imgTaskChanName = server.replace(".", "").replace("\n","") + "VSTaskImg"
             self.taskSendChannels.append(ach.Channel(imgTaskChanName)) # sending on
-           respChan = server.replace(".", "").replace("\n", "") + "VSResp"
+            respChan = server.replace(".", "").replace("\n", "") + "VSResp"
             self.taskRecvChannels.append(ach.Channel(respChan)) # receiving from
 
 	print("done setting up now just waiting to get an image...")
@@ -101,12 +101,12 @@ class BountyCloudVS:
         taskReq.id = self.id
         taskReq.img = reducedimg.tostring()
         self.id = self.id + 1.0
-	print("sending image to the hunters")
+        print("sending image to the hunters")
         ### send image to bounty hunters (so will need a seperate channel to send images)
         for sendChan in self.taskSendChannels:
             sendChan.put(taskReq)
 
-	print("sent image now going to wait for response")
+        print("sent image now going to wait for response")
         # get the start time
         tock = time.time() + waitTime
         winner = None
