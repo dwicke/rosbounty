@@ -55,10 +55,12 @@ class BountyCloudVS:
         self.taskSendChannels = []
         self.taskRecvChannels = []
         for server in servers:
-            self.taskSendChannels.append(ach.Channel(server + "-VSTaskImg")) # sending on
-            self.taskRecvChannels.append(ach.Channel(server + "-VSResp")) # receiving from
+            imgTaskChanName = server.replace(".", "").replace("\n","") + "VSTaskImg"	
+            self.taskSendChannels.append(ach.Channel(imgTaskChanName)) # sending on
+	    respChan = server.replace(".", "").replace("\n", "") + "VSResp"
+            self.taskRecvChannels.append(ach.Channel(respChan)) # receiving from
 
-
+	print("done setting up now just waiting to get an image...")
         self.id = 0.0
         self.failCount = 0
         self.succCount = 0
@@ -80,7 +82,7 @@ class BountyCloudVS:
         self.pub.publish(twist)
 
     def callback(self, ros_data):
-
+	print("got an image!!!")
         ### get image data from camera and process it (don't use ROS just use openCV)
         self.image = bytearray(ros_data.data)
         hsv = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
@@ -95,10 +97,12 @@ class BountyCloudVS:
         taskReq.id = self.id
         taskReq.img = reducedimg.tostring()
         self.id = self.id + 1.0
+	print("sending image to the hunters")
         ### send image to bounty hunters (so will need a seperate channel to send images)
         for sendChan in self.taskSendChannels:
             sendChan.put(taskReq)
 
+	print("sent image now going to wait for response")
         # get the start time
         tock = time.time() + waitTime
         winner = None
@@ -114,16 +118,17 @@ class BountyCloudVS:
         if winner == None:
             ### if it times out restart the loop and count as a fail
             failCount += 1
+            print("did not get a response")
         else:
             ### if we have a msg count as success and then send commands to the servos
             succCount += 1
             self.robot_vel(winner.forwardVelocity, winner.angularVelocity)
-
+            print("Got a resonse and set the robot velocity {} {}".format(winner.forwardVelocity, winner.angularVelocity))
 
 def main(args):
     '''Initializes and cleanup ros node'''
     ic = BountyCloudVS()
-    rospy.init_node('CloudVSWithRos', anonymous=True)
+    rospy.init_node('cloudbot_vs', anonymous=True)
     try:
         rospy.spin()
     except KeyboardInterrupt:
