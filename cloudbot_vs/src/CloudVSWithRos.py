@@ -88,7 +88,7 @@ class BountyCloudVS:
         print("got an image!!!")
         ### get image data from camera and process it (don't use ROS just use openCV)
         self.image = bytearray(ros_data.data)
-        image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
+        self.image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
         hsv = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
         ORANGE_MIN = np.array([5, 50, 50],np.uint8)
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
@@ -108,7 +108,7 @@ class BountyCloudVS:
 
         print("sent image now going to wait for response")
         # get the start time
-        tock = time.time() + waitTime
+        tock = time.time() + self.waitTime
         winner = None
          ### busy wait recv from each of the bounty hunters to get the control for the latest image. do that until either you receive a msg or it times-out
         while time.time() < tock:
