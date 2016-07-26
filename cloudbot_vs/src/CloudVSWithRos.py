@@ -20,7 +20,9 @@ import cv2
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Image
 #from DataCollector import DataCollector
-
+HEIGHT = 800
+WIDTH = 800
+CHANNELS = 3
 
 
 
@@ -83,9 +85,10 @@ class BountyCloudVS:
         self.pub.publish(twist)
 
     def callback(self, ros_data):
-	print("got an image!!!")
+        print("got an image!!!")
         ### get image data from camera and process it (don't use ROS just use openCV)
         self.image = bytearray(ros_data.data)
+        image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
         hsv = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
         ORANGE_MIN = np.array([5, 50, 50],np.uint8)
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
