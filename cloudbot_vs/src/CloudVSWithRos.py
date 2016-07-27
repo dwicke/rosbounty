@@ -94,7 +94,7 @@ class BountyCloudVS:
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
 
-
+        print("{}".format(reducedimg.tostring()))
 
         ## first build the message to send
         taskReq = TaskData()
