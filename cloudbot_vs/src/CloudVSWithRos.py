@@ -96,19 +96,16 @@ class BountyCloudVS:
         ORANGE_MAX = np.array([15, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
 
-
-        reducedimg = zlib.compress(reducedimg.tostring(), 3)
-        print(reducedimg)
+        taskReq = str(self.id) + "," + reducedimg.tostring()
+        reducedTask = zlib.compress(taskReq, 3)
+        print(reducedTask)
         ## first build the message to send
-        taskReq = TaskData()
-        taskReq.id = self.id
-        taskReq.img = c_char_p("HI")#reducedimg
+
         self.id = self.id + 1.0
         print("sending image to the hunters")
         ### send image to bounty hunters (so will need a seperate channel to send images)
         for sendChan in self.taskSendChannels:
-            #sendChan.put(taskReq)
-            sendChan.put('hi')
+            sendChan.put(reducedTask)
 
         print("sent image now going to wait for response")
         # get the start time
