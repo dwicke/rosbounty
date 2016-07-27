@@ -102,7 +102,7 @@ class BountyCloudVS:
         ## first build the message to send
         taskReq = TaskData()
         taskReq.id = self.id
-        taskReq.img = reducedimg.tostring()
+        taskReq.img = reducedimg
         self.id = self.id + 1.0
         print("sending image to the hunters")
         ### send image to bounty hunters (so will need a seperate channel to send images)
