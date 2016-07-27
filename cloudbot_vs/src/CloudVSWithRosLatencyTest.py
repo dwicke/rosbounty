@@ -68,84 +68,38 @@ class BountyCloudVS:
         self.succCount = 0
 
 
-        self.pub = rospy.Publisher('/pioneer/cmd_vel', Twist, queue_size=10)
-        self.subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
+        for x in range(0, len(self.servers)):
+            self.beginSend = time.time()
+
+            self.taskSendChannels[testID].put('reducedTask')
+
+            winner = None
+
+            while winner == None:
+                    recvDat = VelDat()
+                    self.taskRecvChannels[testID].get(recvDat, wait=True, last=True)
+                    self.recvDatTime = time.time()
+                    winner = recvDat
+
+
+            if self.testLatency == True:
+                self.latency.append(self.recvDatTime - self.beginSend)
+                print("latency for {} is {}".format(self.id, self.recvDatTime - self.beginSend))
+                if self.id == 10000:
+                    ## write the list to a file
+                    self.testID += 1
+                    f = open("latency"+self.servers[testID], "w")
+                    f.write("\n".join(str(x) for x in self.latency))
+                    f.close()
+                    print("finished latency test and have written out to "+"latency"+self.servers[testID])
+
+
         rospy.on_shutdown(self.shutdown)
 
 
 
     def shutdown(self):
         # stop the robot
-        self.robot_vel(0,0)
-        # write out the success and fails?
-
-    def robot_vel(self, forward, angular):
-        twist = Twist()
-        twist.linear.x = forward
-        twist.linear.y = 0
-        twist.linear.z = 0
-        twist.angular.x = 0
-        twist.angular.y = 0
-        twist.angular.z = angular
-        self.pub.publish(twist)
-
-    ## t0 -----callback-----
-    def callback(self, ros_data):
-        print("got an image!!!")
-        self.curTime = time.time()
-        self.timeDelta = self.curTime - self.prevTime
-        self.prevTime = self.curTime
-        print("time from last image is {}".format(self.timeDelta))
-        ### get image data from camera and process it (don't use ROS just use openCV)
-        self.image = bytearray(ros_data.data)
-
-        self.image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
-
-        hsv = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
-        ORANGE_MIN = np.array([5, 50, 50],np.uint8)
-        ORANGE_MAX = np.array([15, 255, 255],np.uint8)
-        reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
-
-        taskReq = str(self.id) + "," + reducedimg.tostring()
-        reducedTask = zlib.compress(taskReq, 3)
-
-        self.id = self.id + 1.0
-        print("sending image to the hunters")
-        ### send image to bounty hunters (so will need a seperate channel to send images)
-
-        self.beginSend = time.time()
-        for sendChan in self.taskSendChannels:
-            sendChan.put(reducedTask)
-
-        winner = None
-
-        while winner == None:
-            for recvChan in self.taskRecvChannels:
-                recvDat = VelDat()
-                recvChan.get(recvDat, wait=True, last=True)
-                self.recvDatTime = time.time()
-                winner = recvDat
-
-
-        if self.testLatency == True:
-            self.latency.append(self.recvDatTime - self.beginSend)
-            print("latency for {} is {}".format(self.id, self.recvDatTime - self.beginSend))
-            if self.id == 10000:
-                ## write the list to a file
-                f = open("latency"+self.servers[0], "w")
-                f.write("\n".join(str(x) for x in self.latency))
-                f.close()
-                print("finished latency test and have written out to "+"latency"+self.servers[0])
-
-        if winner == None:
-            ### if it times out restart the loop and count as a fail
-            self.failCount += 1
-            print("did not get a response")
-        else:
-            ### if we have a msg count as success and then send commands to the servos
-            self.succCount += 1
-            self.robot_vel(winner.forwardVelocity, winner.angularVelocity)
-            print("Got a resonse and set the robot velocity {} {}".format(winner.forwardVelocity, winner.angularVelocity))
 
 def main(args):
     '''Initializes and cleanup ros node'''
