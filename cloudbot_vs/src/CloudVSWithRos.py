@@ -41,32 +41,37 @@ class BountyCloudVS:
 
     def __init__(self):
 
-        self.pub = rospy.Publisher('/pioneer/cmd_vel', Twist, queue_size=10)
-        self.subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
-        rospy.on_shutdown(self.shutdown)
 
+        self.testLatency = True
+        self.latency = []
         # how long do we wait for a message from the servers
         self.waitTime = 0.01 ## 100 hz
 
         f = open('ipaddresses.txt', 'r')
-        servers = f.readlines()
+        self.servers = f.readlines()
         f.close()
 
 
         ## build list of channels for sending and receiving
         self.taskSendChannels = []
         self.taskRecvChannels = []
-        for server in servers:
+        for server in self.servers:
 
             imgTaskChanName = server.replace(".", "").replace("\n","") + "VSTaskImg"
             self.taskSendChannels.append(ach.Channel(imgTaskChanName)) # sending on
             respChan = server.replace(".", "").replace("\n", "") + "VSResp"
             self.taskRecvChannels.append(ach.Channel(respChan)) # receiving from
 
-	print("done setting up now just waiting to get an image...")
+        print("done setting up now just waiting to get an image...")
         self.id = 0.0
         self.failCount = 0
         self.succCount = 0
+
+
+        self.pub = rospy.Publisher('/pioneer/cmd_vel', Twist, queue_size=10)
+        self.subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
+        rospy.on_shutdown(self.shutdown)
+
 
 
     def shutdown(self):
@@ -84,8 +89,13 @@ class BountyCloudVS:
         twist.angular.z = angular
         self.pub.publish(twist)
 
+    ## t0 -----callback-----
     def callback(self, ros_data):
         print("got an image!!!")
+        self.curTime = time.time()
+        self.timeDelta = self.curTime - self.prevTime
+        self.prevTime = self.curTime
+        print("time from last image is {}".format(self.timeDelta))
         ### get image data from camera and process it (don't use ROS just use openCV)
         self.image = bytearray(ros_data.data)
 
@@ -98,12 +108,12 @@ class BountyCloudVS:
 
         taskReq = str(self.id) + "," + reducedimg.tostring()
         reducedTask = zlib.compress(taskReq, 3)
-        print(reducedTask)
-        ## first build the message to send
 
         self.id = self.id + 1.0
         print("sending image to the hunters")
         ### send image to bounty hunters (so will need a seperate channel to send images)
+
+        self.beginSend = time.time()
         for sendChan in self.taskSendChannels:
             sendChan.put(reducedTask)
 
@@ -111,14 +121,30 @@ class BountyCloudVS:
         # get the start time
         tock = time.time() + self.waitTime
         winner = None
-         ### busy wait recv from each of the bounty hunters to get the control for the latest image. do that until either you receive a msg or it times-out
-        while time.time() < tock:
+
+        while (time.time() < tock) and winner == None:
+            for recvChan in self.taskRecvChannels:
+                recvDat = VelDat()
+                recvChan.get(recvDat, wait=False, last=True)
+                if recvDat.id == (self.id - 1.0):
+                    winner = recvDat
+                    self.recvDatTime = time.time()
+
+        if (tock - time.time()) > 0.001 and self.testLatency == False:
+            time.sleep(tock-time.time())
+
+        if self.testLatency == True:
             if winner == None:
-                for recvChan in self.taskRecvChannels:
-                    recvDat = VelDat()
-                    recvChan.get(recvDat, wait=False, last=True)
-                    if recvDat.id == (self.id - 1.0):
-                        winner = recvDat
+                self.recvDatTime = time.time()
+
+            self.latency.append(self.recvDatTime - self.beginSend)
+            print("latency for {} is {}".format(self.id, self.recvDatTime - self.beginSend))
+            if self.id == 10000:
+                ## write the list to a file
+                f = open("latency"+self.servers[0], "w")
+                f.write("\n".join(str(x) for x in self.latency))
+                f.close()
+                print("finished latency test and have written out to "+"latency"+self.servers[0])
 
         if winner == None:
             ### if it times out restart the loop and count as a fail
