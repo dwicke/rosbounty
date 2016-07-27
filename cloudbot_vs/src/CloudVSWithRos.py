@@ -88,7 +88,7 @@ class BountyCloudVS:
         print("got an image!!!")
         ### get image data from camera and process it (don't use ROS just use openCV)
         self.image = bytearray(ros_data.data)
-        print("{}".format(self.image.tostring()))
+        print("{}".format(ros_data.data))
         self.image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
 
         hsv = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
