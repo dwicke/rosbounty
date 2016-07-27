@@ -42,8 +42,6 @@ class BountyCloudVS:
     def __init__(self):
 
 
-        self.testLatency = True
-        self.latency = []
         # how long do we wait for a message from the servers
         self.waitTime = 0.01 ## 100 hz
 
@@ -128,23 +126,9 @@ class BountyCloudVS:
                 recvChan.get(recvDat, wait=False, last=True)
                 if recvDat.id == (self.id - 1.0):
                     winner = recvDat
-                    self.recvDatTime = time.time()
 
-        if (tock - time.time()) > 0.001 and self.testLatency == False:
+        if (tock - time.time()) > 0.001:
             time.sleep(tock-time.time())
-
-        if self.testLatency == True:
-            if winner == None:
-                self.recvDatTime = time.time()
-
-            self.latency.append(self.recvDatTime - self.beginSend)
-            print("latency for {} is {}".format(self.id, self.recvDatTime - self.beginSend))
-            if self.id == 10000:
-                ## write the list to a file
-                f = open("latency"+self.servers[0], "w")
-                f.write("\n".join(str(x) for x in self.latency))
-                f.close()
-                print("finished latency test and have written out to "+"latency"+self.servers[0])
 
         if winner == None:
             ### if it times out restart the loop and count as a fail
