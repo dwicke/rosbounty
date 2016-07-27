@@ -42,11 +42,6 @@ class BountyCloudVS:
     def __init__(self):
 
 
-        self.testLatency = True
-        self.latency = []
-        # how long do we wait for a message from the servers
-        self.waitTime = 0.01 ## 100 hz
-
         f = open('ipaddresses.txt', 'r')
         self.servers = f.readlines()
         f.close()
@@ -62,44 +57,27 @@ class BountyCloudVS:
             respChan = server.replace(".", "").replace("\n", "") + "VSResp"
             self.taskRecvChannels.append(ach.Channel(respChan)) # receiving from
 
-        print("done setting up now just waiting to get an image...")
-        self.id = 0.0
-        self.failCount = 0
-        self.succCount = 0
+        print("done setting up now testing latency...")
 
 
-        for x in range(0, len(self.servers)):
-            self.beginSend = time.time()
 
-            self.taskSendChannels[testID].put('reducedTask')
+        for testID in range(0, len(self.servers)):
+            self.latency = []
+            for i in range(0,10000):
+                recvDat = VelDat()
+                self.beginSend = time.time()
+                self.taskSendChannels[testID].put('reducedTask')
+                self.taskRecvChannels[testID].get(recvDat, wait=True, last=True)
+                self.recvDatTime = time.time()
 
-            winner = None
-
-            while winner == None:
-                    recvDat = VelDat()
-                    self.taskRecvChannels[testID].get(recvDat, wait=True, last=True)
-                    self.recvDatTime = time.time()
-                    winner = recvDat
-
-
-            if self.testLatency == True:
                 self.latency.append(self.recvDatTime - self.beginSend)
-                print("latency for {} is {}".format(self.id, self.recvDatTime - self.beginSend))
-                if self.id == 10000:
-                    ## write the list to a file
-                    self.testID += 1
-                    f = open("latency"+self.servers[testID], "w")
-                    f.write("\n".join(str(x) for x in self.latency))
-                    f.close()
-                    print("finished latency test and have written out to "+"latency"+self.servers[testID])
+                print("latency for {} is {}".format(i, self.recvDatTime - self.beginSend))
 
 
-        rospy.on_shutdown(self.shutdown)
-
-
-
-    def shutdown(self):
-        # stop the robot
+            f = open("latency"+self.servers[testID], "w")
+            f.write("\n".join(str(x) for x in self.latency))
+            f.close()
+            print("finished latency test and have written out to "+"latency"+self.servers[testID])
 
 def main(args):
     '''Initializes and cleanup ros node'''
