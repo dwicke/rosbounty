@@ -98,7 +98,7 @@ class BountyCloudVS:
 
 
         reducedimg = zlib.compress(reducedimg.tostring(), 3)
-
+        print(reducedimg)
         ## first build the message to send
         taskReq = TaskData()
         taskReq.id = self.id
