@@ -71,10 +71,10 @@ class BountyCloudVS:
                 self.recvDatTime = time.time()
 
                 self.latency.append(self.recvDatTime - self.beginSend)
-                print("latency for {} is {}".format(i, self.recvDatTime - self.beginSend))
+                print("latency for {} count is {} is {}".format(self.servers[testID], i, self.recvDatTime - self.beginSend))
 
 
-            f = open("latency"+self.servers[testID], "w")
+            f = open("latency"+self.servers[testID].replace(".", "").replace("\n",""), "w")
             f.write("\n".join(str(x) for x in self.latency))
             f.close()
             print("finished latency test and have written out to "+"latency"+self.servers[testID])
