@@ -88,7 +88,7 @@ class BountyCloudVS:
         print("got an image!!!")
         ### get image data from camera and process it (don't use ROS just use openCV)
         self.image = bytearray(ros_data.data)
-        print("{}".format(ros_data.data))
+
         self.image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
 
         hsv = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
@@ -97,7 +97,7 @@ class BountyCloudVS:
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
 
 
-        #reducedimg = zlib.compress(reducedimg.tostring, 3)
+        reducedimg = zlib.compress(reducedimg.tostring(), 3)
 
         ## first build the message to send
         taskReq = TaskData()
