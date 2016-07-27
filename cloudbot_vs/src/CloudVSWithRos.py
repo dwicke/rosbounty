@@ -107,7 +107,8 @@ class BountyCloudVS:
         print("sending image to the hunters")
         ### send image to bounty hunters (so will need a seperate channel to send images)
         for sendChan in self.taskSendChannels:
-            sendChan.put(taskReq)
+            #sendChan.put(taskReq)
+            sendChan.put('hi')
 
         print("sent image now going to wait for response")
         # get the start time
