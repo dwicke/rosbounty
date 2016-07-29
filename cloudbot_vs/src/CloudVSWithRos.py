@@ -43,7 +43,7 @@ class BountyCloudVS:
 
 
         # how long do we wait for a message from the servers
-        self.waitTime = 0.01 ## 100 hz
+        self.waitTime = 0.04 ## 25 hz
 
         f = open('ipaddresses.txt', 'r')
         self.servers = f.readlines()
@@ -65,6 +65,7 @@ class BountyCloudVS:
         self.failCount = 0
         self.succCount = 0
         self.prevTime = time.time()
+        self.latency = []
 
         self.pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
         self.subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
@@ -129,6 +130,7 @@ class BountyCloudVS:
                     winner = recvDat
         self.latency.append(self.endRecvTime - self.beginSend)
 
+
         if (tock - time.time()) > 0.001:
             time.sleep(tock-time.time())
 
@@ -141,6 +143,16 @@ class BountyCloudVS:
             self.succCount += 1
             self.robot_vel(winner.forwardVelocity, winner.angularVelocity)
             print("Got a resonse and set the robot velocity {} {}".format(winner.forwardVelocity, winner.angularVelocity))
+
+        if (len(self.latency) == 500):
+            f = open("latencybountyhunting", "w")
+            f.write("\n".join(str(x) for x in self.latency))
+            f.close()
+            # f = open("succbountyhunting", "w")
+            # f.write(str(self.succCount) + "," + str(self.failCount))
+            # f.close()
+            print("wrote out latency")
+
 
 def main(args):
     '''Initializes and cleanup ros node'''
