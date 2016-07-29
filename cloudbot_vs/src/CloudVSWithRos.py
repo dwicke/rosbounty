@@ -43,7 +43,7 @@ class BountyCloudVS:
 
 
         # how long do we wait for a message from the servers
-        self.waitTime = 0.04 ## 25 hz
+        self.waitTime = 0.1 ## 25 hz
 
         f = open('ipaddresses.txt', 'r')
         self.servers = f.readlines()
@@ -107,7 +107,6 @@ class BountyCloudVS:
 
         taskReq = str(self.id) + "," + reducedimg.tostring()
         reducedTask = zlib.compress(taskReq, 3)
-        #reducedTask = str(len(reducedTask)) + "," + reducedTask
 
         self.id = self.id + 1.0
         print("sending image to the hunters")
@@ -128,6 +127,7 @@ class BountyCloudVS:
             for recvChan in self.taskRecvChannels:
                 recvDat = VelDat()
                 recvChan.get(recvDat, wait=False, last=True)
+
                 if recvDat.id == (self.id - 1.0):
                     self.endRecvTime = time.time()
                     winner = recvDat
