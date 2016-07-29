@@ -107,7 +107,7 @@ class BountyCloudVS:
 
         taskReq = str(self.id) + "," + reducedimg.tostring()
         reducedTask = zlib.compress(taskReq, 3)
-        reducedTask = str(len(reducedTask)) + "," + reducedTask + "\n"
+        #reducedTask = str(len(reducedTask)) + "," + reducedTask
 
         self.id = self.id + 1.0
         print("sending image to the hunters")
@@ -116,7 +116,7 @@ class BountyCloudVS:
         self.beginSend = time.time()
         for sendChan in self.taskSendChannels:
             #sendChan.put(reducedTask)
-            sendChan.put("hi")
+            sendChan.put(str(len(reducedTask)))
 
         print("sent image now going to wait for response")
         # get the start time
