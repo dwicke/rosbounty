@@ -91,10 +91,10 @@ class BountyCloudVS:
     ## t0 -----callback-----
     def callback(self, ros_data):
         print("got an image!!!")
-        self.curTime = time.time()
-        self.timeDelta = self.curTime - self.prevTime
-        self.prevTime = self.curTime
-        print("time from last image is {}".format(self.timeDelta))
+        #self.curTime = time.time()
+        #self.timeDelta = self.curTime - self.prevTime
+        #self.prevTime = self.curTime
+        #print("time from last image is {}".format(self.timeDelta))
         ### get image data from camera and process it (don't use ROS just use openCV)
         self.image = bytearray(ros_data.data)
 
@@ -109,20 +109,18 @@ class BountyCloudVS:
         reducedTask = zlib.compress(taskReq, 3)
 
         self.id = self.id + 1.0
-        print("sending image to the hunters")
+        #print("sending image to the hunters")
         ### send image to bounty hunters (so will need a seperate channel to send images)
 
+        winner = None
+        self.endRecvTime = 0.0
 
+        self.beginSend = time.time()
+        tock = self.beginSend + self.waitTime
         for sendChan in self.taskSendChannels:
             sendChan.put(reducedTask)
-            #sendChan.put(str(len(reducedTask)) + "," + reducedTask)
-        self.beginSend = time.time()
-        print("sent image now going to wait for response")
-        # get the start time
-        tock = time.time() + self.waitTime
-        winner = None
 
-        self.endRecvTime = 0.0
+
         while (time.time() < tock) and winner == None:
             for recvChan in self.taskRecvChannels:
                 recvDat = VelDat()
@@ -133,6 +131,7 @@ class BountyCloudVS:
                     winner = recvDat
         if self.endRecvTime == 0.0:
             self.endRecvTime = time.time()
+        print("latency = {} ".format(self.endRecvTime - self.beginSend))
         self.latency.append(self.endRecvTime - self.beginSend)
 
 
