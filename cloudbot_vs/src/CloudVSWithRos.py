@@ -107,6 +107,7 @@ class BountyCloudVS:
 
         taskReq = str(self.id) + "," + reducedimg.tostring()
         reducedTask = zlib.compress(taskReq, 3)
+        reducedTask = str(len(reducedTask)) + "," + reducedTask + "\n"
 
         self.id = self.id + 1.0
         print("sending image to the hunters")
