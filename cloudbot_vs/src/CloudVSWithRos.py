@@ -64,7 +64,7 @@ class BountyCloudVS:
         self.id = 1.0
         self.failCount = 0
         self.succCount = 0
-
+        self.prevTime = time.time()
 
         self.pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
         self.subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
