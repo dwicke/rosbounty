@@ -130,7 +130,7 @@ class BountyCloudVS:
                     self.endRecvTime = time.time()
                     winner = recvDat
         if self.endRecvTime == 0.0:
-            self.endRecvTime = time.tim()
+            self.endRecvTime = time.time()
         self.latency.append(self.endRecvTime - self.beginSend)
 
 
