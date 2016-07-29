@@ -121,6 +121,7 @@ class BountyCloudVS:
         tock = time.time() + self.waitTime
         winner = None
 
+        self.endRecvTime = 0.0
         while (time.time() < tock) and winner == None:
             for recvChan in self.taskRecvChannels:
                 recvDat = VelDat()
@@ -128,6 +129,8 @@ class BountyCloudVS:
                 if recvDat.id == (self.id - 1.0):
                     self.endRecvTime = time.time()
                     winner = recvDat
+        if self.endRecvTime == 0.0:
+            self.endRecvTime = time.tim()
         self.latency.append(self.endRecvTime - self.beginSend)
 
 
