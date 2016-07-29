@@ -61,12 +61,12 @@ class BountyCloudVS:
             self.taskRecvChannels.append(ach.Channel(respChan)) # receiving from
 
         print("done setting up now just waiting to get an image...")
-        self.id = 0.0
+        self.id = 1.0
         self.failCount = 0
         self.succCount = 0
 
 
-        self.pub = rospy.Publisher('/pioneer/cmd_vel', Twist, queue_size=10)
+        self.pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
         self.subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
         rospy.on_shutdown(self.shutdown)
 
@@ -125,7 +125,9 @@ class BountyCloudVS:
                 recvDat = VelDat()
                 recvChan.get(recvDat, wait=False, last=True)
                 if recvDat.id == (self.id - 1.0):
+                    self.endRecvTime = time.time()
                     winner = recvDat
+        self.latency.append(self.endRecvTime - self.beginSend)
 
         if (tock - time.time()) > 0.001:
             time.sleep(tock-time.time())
