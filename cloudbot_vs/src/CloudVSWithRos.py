@@ -112,11 +112,11 @@ class BountyCloudVS:
         print("sending image to the hunters")
         ### send image to bounty hunters (so will need a seperate channel to send images)
 
-        self.beginSend = time.time()
-        for sendChan in self.taskSendChannels:
-            #sendChan.put(reducedTask)
-            sendChan.put(str(len(reducedTask)) + "," + reducedTask)
 
+        for sendChan in self.taskSendChannels:
+            sendChan.put(reducedTask)
+            #sendChan.put(str(len(reducedTask)) + "," + reducedTask)
+        self.beginSend = time.time()
         print("sent image now going to wait for response")
         # get the start time
         tock = time.time() + self.waitTime
