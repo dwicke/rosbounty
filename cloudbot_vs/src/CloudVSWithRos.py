@@ -115,7 +115,8 @@ class BountyCloudVS:
 
         self.beginSend = time.time()
         for sendChan in self.taskSendChannels:
-            sendChan.put(reducedTask)
+            #sendChan.put(reducedTask)
+            sendChan.put("hi")
 
         print("sent image now going to wait for response")
         # get the start time
