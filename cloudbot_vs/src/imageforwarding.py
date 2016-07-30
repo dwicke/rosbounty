@@ -43,7 +43,9 @@ class BountyCloudVS:
     def __init__(self):
 
         self.tcpCon = ConnectionManager('tcp')
-        self.tcpCon.addClient('169.254.99.201', 9002)
+        #self.tcpCon.addClient('169.254.99.201', 9002)
+        self.tcpCon.addClient('192.168.2.5', 9002)
+
 
         self.pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
         self.subscriber = rospy.Subscriber("/camera/image_raw", Image, self.callback,  queue_size = 1)
