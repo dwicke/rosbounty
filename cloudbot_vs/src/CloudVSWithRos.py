@@ -128,6 +128,7 @@ class BountyCloudVS:
         recvDat = VelDat()
         while (time.time() < tock) and winner == None:
             for ip, recvChan in self.taskRecvChannels[self.exprNames[self.currentExp]].items():
+                print("getting from {}".format(ip))
                 recvChan.get(recvDat, wait=False, last=True)
                 if recvDat.id == (self.id - 1.0):
                     self.endRecvTime = time.time()
