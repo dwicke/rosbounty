@@ -136,7 +136,7 @@ class BountyCloudVS:
                     winner = recvDat
         if self.endRecvTime == 0.0:
             self.endRecvTime = time.time()
-            print("didn't recv anything")
+            #print("didn't recv anything")
 
         #print("latency = {} ".format(self.endRecvTime - self.beginSend))
         self.latency.append(self.endRecvTime - self.beginSend)
@@ -147,7 +147,7 @@ class BountyCloudVS:
 
 
             self.robot_vel(winner.forwardVelocity, winner.angularVelocity)
-            print("Got a resonse and set the robot velocity {} {}".format(winner.forwardVelocity, winner.angularVelocity))
+            #print("Got a resonse and set the robot velocity {} {}".format(winner.forwardVelocity, winner.angularVelocity))
 
         if (len(self.latency) == 500):
 
@@ -158,17 +158,19 @@ class BountyCloudVS:
             latMean = np.mean(self.latency)
             latStd = np.std(self.latency)
             f = open("stats" + self.exprNames[self.currentExp] + str(self.currentWaitIndex) + ".txt", "w")
-            f.write("{}, {}, {}".format(latMean, latStd, sum(i < self.waitTime[self.currentWaitIndex] for i in self.latency)))
+            f.write("{}, {}".format(latMean, latStd))
             f.close()
 
             print("wrote out latency for {} at latency {}".format(self.exprNames[self.currentExp], self.waitTime[self.currentWaitIndex]))
             self.latency = []
-            if self.currentWaitIndex == len(self.waitTime):
+            if self.currentWaitIndex == len(self.waitTime) - 1:
                 ## we have finished an experiment
                 self.currentExp = self.currentExp + 1
                 self.currentWaitIndex = 0
             else:
                 self.currentWaitIndex = self.currentWaitIndex + 1
+            if self.currentExp > len(self.exprNames):
+                rospy.signal_shutdown("ROSPy Shutdown")
 
 
 def main(args):
