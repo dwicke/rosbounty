@@ -47,6 +47,7 @@ class BountyCloudVS:
         f.close()
 
 
+
         ## build list of channels for sending and receiving
         self.taskSendChannels = {}
         self.taskRecvChannels = {}
