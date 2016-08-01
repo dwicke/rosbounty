@@ -159,7 +159,7 @@ class BountyCloudVS:
             f.write("{}, {}, {}".format(latMean, latStd, sum(i < self.waitTime[self.currentWaitIndex] for i in self.latency)))
             f.close()
 
-            print("wrote out latency")
+            print("wrote out latency for {} at latency {}".format(self.exprNames[self.currentExp], self.waitTime[self.currentWaitIndex]))
             self.latency = []
             if self.currentWaitIndex == len(self.waitTime):
                 ## we have finished an experiment
