@@ -64,6 +64,7 @@ class BountyCloudVS:
                 self.tempServ = f.readlines()
                 f.close()
                 self.taskSendChannels[expName] = {}
+                self.taskRecvChannels[expName] = {}
                 for server in self.tempServ:
                     self.taskSendChannels[expName][server] = self.taskSendChannels['all'][server]
                     self.taskRecvChannels[expName][server] = self.taskRecvChannels['all'][server]
