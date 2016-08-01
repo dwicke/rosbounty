@@ -25,12 +25,6 @@ WIDTH = 320
 CHANNELS = 3
 
 
-
-
-class TaskData(Structure):
-    _fields_ = [('id', c_double),
-                ('img', c_char_p)]
-
 class VelDat(Structure):
     _fields_ = [('forwardVelocity', c_double),
                 ('angularVelocity', c_double),
@@ -43,27 +37,38 @@ class BountyCloudVS:
 
 
         # how long do we wait for a message from the servers
-        self.waitTime = 0.04 ## 25 hz
+        self.waitTime = {1.0/30.0, 1.0/40.0, 1.0/50.0, 1.0/60.0, 1.0/70.0, 1.0/80.0, 1.0/90.0, 1.0/100.0} ## 25 hz
 
+        self.currentWaitIndex = 0
+        self.currentExp = 0
+        self.exprNames = ["all", "allNY", "allTor", "topNY", "topTOR"]
         f = open('ipaddresses.txt', 'r')
         self.servers = f.readlines()
         f.close()
 
 
         ## build list of channels for sending and receiving
-        self.taskSendChannels = []
-        self.taskRecvChannels = []
+        self.taskSendChannels = {{},{},{},{},{}}
+        self.taskRecvChannels = {{},{},{},{},{}}
         for server in self.servers:
 
             imgTaskChanName = server.replace(".", "").replace("\n","") + "VSTaskImg"
-            self.taskSendChannels.append(ach.Channel(imgTaskChanName)) # sending on
+            self.taskSendChannels['all'][server] = ach.Channel(imgTaskChanName) # sending on
             respChan = server.replace(".", "").replace("\n", "") + "VSResp"
-            self.taskRecvChannels.append(ach.Channel(respChan)) # receiving from
+            self.taskRecvChannels['all'][server] = ach.Channel(respChan) # receiving from
+        for expName in exprNames:
+            if expName != 'all':
+                f = open(expName + ".txt", 'r')
+                self.tempServ = f.readlines()
+                f.close()
+
+                for server in self.tempServ:
+                    self.taskSendChannels[expName][server] = self.taskSendChannels['all'][server]
+                    self.taskRecvChannels[expName][server] = self.taskRecvChannels['all'][server]
+
 
         print("done setting up now just waiting to get an image...")
         self.id = 1.0
-        self.failCount = 0
-        self.succCount = 0
         self.prevTime = time.time()
         self.latency = []
 
@@ -91,11 +96,7 @@ class BountyCloudVS:
     ## t0 -----callback-----
     def callback(self, ros_data):
         print("got an image!!!")
-        #self.curTime = time.time()
-        #self.timeDelta = self.curTime - self.prevTime
-        #self.prevTime = self.curTime
-        #print("time from last image is {}".format(self.timeDelta))
-        ### get image data from camera and process it (don't use ROS just use openCV)
+
         self.image = bytearray(ros_data.data)
 
         self.image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
@@ -116,13 +117,13 @@ class BountyCloudVS:
         self.endRecvTime = 0.0
 
         self.beginSend = time.time()
-        tock = self.beginSend + self.waitTime
-        for sendChan in self.taskSendChannels:
+        tock = self.beginSend + self.waitTime[self.currentWaitIndex]
+        for ip, sendChan in self.taskSendChannels[self.exprNames[self.currentExp]].items():
             sendChan.put(reducedTask)
 
         recvDat = VelDat()
         while (time.time() < tock) and winner == None:
-            for recvChan in self.taskRecvChannels:
+            for ip, recvChan in self.taskRecvChannels[self.exprNames[self.currentExp]].items():
                 recvChan.get(recvDat, wait=False, last=True)
                 if recvDat.id == (self.id - 1.0):
                     self.endRecvTime = time.time()
@@ -131,31 +132,37 @@ class BountyCloudVS:
             self.endRecvTime = time.time()
             print("didn't recv anything")
 
-        print("latency = {} ".format(self.endRecvTime - self.beginSend))
+        #print("latency = {} ".format(self.endRecvTime - self.beginSend))
         self.latency.append(self.endRecvTime - self.beginSend)
 
 
         if (tock - time.time()) > 0.001:
             time.sleep(tock-time.time())
 
-        if winner == None:
-            ### if it times out restart the loop and count as a fail
-            self.failCount += 1
-            print("did not get a response")
-        else:
-            ### if we have a msg count as success and then send commands to the servos
-            self.succCount += 1
+
             self.robot_vel(winner.forwardVelocity, winner.angularVelocity)
             print("Got a resonse and set the robot velocity {} {}".format(winner.forwardVelocity, winner.angularVelocity))
 
         if (len(self.latency) == 500):
-            f = open("latencybountyhunting", "w")
+
+            f = open(self.exprNames[self.currentExp] + str(self.currentWaitIndex) + ".txt", "w")
             f.write("\n".join(str(x) for x in self.latency))
             f.close()
-            # f = open("succbountyhunting", "w")
-            # f.write(str(self.succCount) + "," + str(self.failCount))
-            # f.close()
+
+            latMean = np.mean(self.latency)
+            latStd = np.std(self.latency)
+            f = open("stats" + self.exprNames[self.currentExp] + str(self.currentWaitIndex) + ".txt", "w")
+            f.write("{}, {}, {}".format(latMean, latStd, sum(i < self.waitTime[self.currentWaitIndex] for i in self.latency)))
+            f.close()
+
             print("wrote out latency")
+            self.latency = []
+            if self.currentWaitIndex == len(self.waitTime):
+                ## we have finished an experiment
+                self.currentExp = self.currentExp + 1
+                self.currentWaitIndex = 0
+            else:
+                self.currentWaitIndex = self.currentWaitIndex + 1
 
 
 def main(args):
