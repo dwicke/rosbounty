@@ -48,8 +48,10 @@ class BountyCloudVS:
 
 
         ## build list of channels for sending and receiving
-        self.taskSendChannels = {{},{},{},{},{}}
-        self.taskRecvChannels = {{},{},{},{},{}}
+        self.taskSendChannels = {}
+        self.taskRecvChannels = {}
+        self.taskSendChannels['all'] = {}
+        self.taskRecvChannels['all'] = {}
         for server in self.servers:
 
             imgTaskChanName = server.replace(".", "").replace("\n","") + "VSTaskImg"
@@ -61,7 +63,7 @@ class BountyCloudVS:
                 f = open(expName + ".txt", 'r')
                 self.tempServ = f.readlines()
                 f.close()
-
+                self.taskSendChannels[expName] = {}
                 for server in self.tempServ:
                     self.taskSendChannels[expName][server] = self.taskSendChannels['all'][server]
                     self.taskRecvChannels[expName][server] = self.taskRecvChannels['all'][server]
