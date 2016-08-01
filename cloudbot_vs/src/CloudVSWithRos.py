@@ -37,7 +37,7 @@ class BountyCloudVS:
 
 
         # how long do we wait for a message from the servers
-        self.waitTime = {1.0/30.0, 1.0/40.0, 1.0/50.0, 1.0/60.0, 1.0/70.0, 1.0/80.0, 1.0/90.0, 1.0/100.0} ## 25 hz
+        self.waitTime = [1.0/30.0, 1.0/40.0, 1.0/50.0, 1.0/60.0, 1.0/70.0, 1.0/80.0, 1.0/90.0, 1.0/100.0] ## 25 hz
 
         self.currentWaitIndex = 0
         self.currentExp = 0
@@ -121,6 +121,7 @@ class BountyCloudVS:
 
         self.beginSend = time.time()
         tock = self.beginSend + self.waitTime[self.currentWaitIndex]
+
         for ip, sendChan in self.taskSendChannels[self.exprNames[self.currentExp]].items():
             sendChan.put(reducedTask)
 
