@@ -43,7 +43,7 @@ class BountyCloudVS:
 
 
         # how long do we wait for a message from the servers
-        self.waitTime = 0.1 ## 25 hz
+        self.waitTime = 0.04 ## 25 hz
 
         f = open('ipaddresses.txt', 'r')
         self.servers = f.readlines()
