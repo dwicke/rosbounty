@@ -41,7 +41,7 @@ class BountyCloudVS:
 
         self.currentWaitIndex = 0
         self.currentExp = 0
-        self.exprNames = ["all", "allNY", "allTor", "topNY", "topTOR"]
+        self.exprNames = ["topNY", "all", "allNY", "allTor", "topTOR"]
         f = open('ipaddresses.txt', 'r')
         self.servers = f.readlines()
         f.close()
@@ -135,10 +135,10 @@ class BountyCloudVS:
                     self.endRecvTime = time.time()
                     winner = recvDat
         if self.endRecvTime == 0.0:
-            self.endRecvTime = time.time()
+            self.endRecvTime = 500
             #print("didn't recv anything")
 
-        #print("latency = {} ".format(self.endRecvTime - self.beginSend))
+        print("latency = {} ".format(self.endRecvTime - self.beginSend))
         self.latency.append(self.endRecvTime - self.beginSend)
 
 
