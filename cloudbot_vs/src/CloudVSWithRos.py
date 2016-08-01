@@ -58,7 +58,7 @@ class BountyCloudVS:
             self.taskSendChannels['all'][server] = ach.Channel(imgTaskChanName) # sending on
             respChan = server.replace(".", "").replace("\n", "") + "VSResp"
             self.taskRecvChannels['all'][server] = ach.Channel(respChan) # receiving from
-        for expName in exprNames:
+        for expName in self.exprNames:
             if expName != 'all':
                 f = open(expName + ".txt", 'r')
                 self.tempServ = f.readlines()
