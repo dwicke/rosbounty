@@ -43,8 +43,8 @@ class BountyCloudVS:
     def __init__(self):
 
         self.tcpCon = ConnectionManager('tcp')
-        #self.tcpCon.addClient('169.254.99.201', 9002)
-        self.tcpCon.addClient('192.168.2.5', 9002)
+        self.tcpCon.addClient('169.254.99.212', 9003)
+        #self.tcpCon.addClient('192.168.2.5', 9002)
 
 
         self.pub = rospy.Publisher('/RosAria/cmd_vel', Twist, queue_size=10)
@@ -77,7 +77,6 @@ class BountyCloudVS:
         #print("time from last image is {}".format(self.timeDelta))
         ### get image data from camera and process it (don't use ROS just use openCV)
         self.image = bytearray(ros_data.data)
-
         self.image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
 
 
