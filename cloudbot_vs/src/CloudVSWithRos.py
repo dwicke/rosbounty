@@ -135,11 +135,13 @@ class BountyCloudVS:
                     self.endRecvTime = time.time()
                     winner = recvDat
         if self.endRecvTime == 0.0:
-            self.endRecvTime = 500
+            self.latency.append(500)
+        else:
+            self.latency.append(self.endRecvTime - self.beginSend)
             #print("didn't recv anything")
 
         #print("latency = {} ".format(self.endRecvTime - self.beginSend))
-        self.latency.append(self.endRecvTime - self.beginSend)
+
 
 
         if (tock - time.time()) > 0.001:
