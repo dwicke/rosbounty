@@ -151,13 +151,13 @@ class BountyCloudVS:
 
         if (len(self.latency) == 500):
 
-            f = open(self.exprNames[self.currentExp] + str(self.currentWaitIndex) + ".txt", "w")
-            f.write("\n".join(str(x) for x in self.latency))
+            f = open("exps/"+self.exprNames[self.currentExp] + str(self.currentWaitIndex) + ".txt", "w")
+            f.write(", " + str(self.waitTime[self.currentWaitIndex]) + "\n".join(str(x) for x in self.latency))
             f.close()
 
             latMean = np.mean(self.latency)
             latStd = np.std(self.latency)
-            f = open("stats" + self.exprNames[self.currentExp] + str(self.currentWaitIndex) + ".txt", "w")
+            f = open("exps/stats" + self.exprNames[self.currentExp] + str(self.currentWaitIndex) + ".txt", "w")
             f.write("{}, {}".format(latMean, latStd))
             f.close()
 
