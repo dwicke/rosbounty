@@ -99,7 +99,7 @@ class BountyCloudVS:
 
     ## t0 -----callback-----
     def callback(self, ros_data):
-        print("got an image!!!")
+        #print("got an image!!!")
 
         self.image = bytearray(ros_data.data)
 
@@ -138,7 +138,7 @@ class BountyCloudVS:
             self.endRecvTime = 500
             #print("didn't recv anything")
 
-        print("latency = {} ".format(self.endRecvTime - self.beginSend))
+        #print("latency = {} ".format(self.endRecvTime - self.beginSend))
         self.latency.append(self.endRecvTime - self.beginSend)
 
 
