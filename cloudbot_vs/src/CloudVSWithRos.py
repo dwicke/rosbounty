@@ -101,8 +101,8 @@ class BountyCloudVS:
         self.image = np.array(self.image, dtype="uint8").reshape(HEIGHT,WIDTH,CHANNELS)
 
         hsv = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
-        ORANGE_MIN = np.array([5, 50, 50],np.uint8)
-        ORANGE_MAX = np.array([15, 255, 255],np.uint8)
+        ORANGE_MIN = np.array([5, 125, 100],np.uint8)
+        ORANGE_MAX = np.array([20, 255, 255],np.uint8)
         reducedimg = cv2.inRange(hsv,ORANGE_MIN, ORANGE_MAX)
 
         taskReq = str(self.id) + "," + reducedimg.tostring()
